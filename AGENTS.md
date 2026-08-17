@@ -8,10 +8,10 @@ Checkout is via **WhatsApp** (no payment gateway).
 
 ## Structure
 
-The Next.js app lives in `ciale-app/`, not the repo root.
+The Next.js app lives at the repo root.
 
 ```
-ciale-app/src/
+src/
 ├── app/          # layout.tsx, page.tsx (both "use client"), globals.css
 ├── components/   # 10 client components, all "use client"
 ├── context/      # CartContext.tsx (React Context + localStorage)
@@ -21,15 +21,13 @@ ciale-app/src/
 
 ## Commands
 
-All from `ciale-app/` directory:
-
 ```bash
 npm run dev        # Dev server (Turbopack)
 npm run build      # Production build (use this to verify changes)
 npm run lint       # ESLint
 ```
 
-No test framework is configured. No typecheck script exists (use `npx tsc --noEmit` from `ciale-app/`).
+No test framework is configured. No typecheck script exists (use `npx tsc --noEmit`).
 
 **npm quirk:** npm v11+ has a semver bug with `@tailwindcss/oxide`. If `npm install` fails with "Invalid Version", use `npx npm@10 install` as workaround.
 

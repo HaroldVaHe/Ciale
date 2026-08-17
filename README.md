@@ -51,37 +51,36 @@ The site is designed as a **single-page application** with smooth anchor-link na
 
 ```
 Ciale/
-├── AGENTS.md                    # Agent instructions for AI tools
-├── README.md                    # This file
-└── ciale-app/                   # ← Next.js application root
-    ├── package.json
-    ├── tsconfig.json
-    ├── next.config.ts
-    ├── postcss.config.mjs
-    ├── eslint.config.mjs
-    ├── public/                  # Static assets (currently only default SVGs)
-    └── src/
-        ├── app/
-        │   ├── globals.css      # Tailwind v4 theme + global styles
-        │   ├── layout.tsx       # Root layout: fonts, metadata, CartProvider
-        │   └── page.tsx         # Single page: assembles all sections
-        ├── components/
-        │   ├── AnnouncementBar.tsx    # Top promo bar
-        │   ├── Header.tsx             # Sticky navbar + mobile menu
-        │   ├── HeroSection.tsx        # Landing hero with CTA
-        │   ├── ProductCard.tsx        # Individual product card
-        │   ├── ProductGrid.tsx        # Filterable grid + search
-        │   ├── QuickViewModal.tsx     # Product detail modal
-        │   ├── CartDrawer.tsx         # Slide-in cart panel
-        │   ├── PersonalizaSection.tsx # Customization feature
-        │   ├── SobreNosotros.tsx      # About us + value props
-        │   └── Footer.tsx             # Footer with contact
-        ├── context/
-        │   └── CartContext.tsx   # Cart state + localStorage
-        ├── data/
-        │   └── products.ts      # 12 hardcoded product definitions
-        └── lib/
-            └── utils.ts         # cn(), formatCOP(), generateWhatsAppLink()
+├── AGENTS.md              # Agent instructions for AI tools
+├── README.md              # This file
+├── package.json
+├── tsconfig.json
+├── next.config.ts
+├── postcss.config.mjs
+├── eslint.config.mjs
+├── public/                # Static assets (currently only default SVGs)
+└── src/
+    ├── app/
+    │   ├── globals.css    # Tailwind v4 theme + global styles
+    │   ├── layout.tsx     # Root layout: fonts, metadata, CartProvider
+    │   └── page.tsx       # Single page: assembles all sections
+    ├── components/
+    │   ├── AnnouncementBar.tsx    # Top promo bar
+    │   ├── Header.tsx             # Sticky navbar + mobile menu
+    │   ├── HeroSection.tsx        # Landing hero with CTA
+    │   ├── ProductCard.tsx        # Individual product card
+    │   ├── ProductGrid.tsx        # Filterable grid + search
+    │   ├── QuickViewModal.tsx     # Product detail modal
+    │   ├── CartDrawer.tsx         # Slide-in cart panel
+    │   ├── PersonalizaSection.tsx # Customization feature
+    │   ├── SobreNosotros.tsx      # About us + value props
+    │   └── Footer.tsx             # Footer with contact
+    ├── context/
+    │   └── CartContext.tsx   # Cart state + localStorage
+    ├── data/
+    │   └── products.ts      # 12 hardcoded product definitions
+    └── lib/
+        └── utils.ts         # cn(), formatCOP(), generateWhatsAppLink()
 ```
 
 ### Getting Started
@@ -99,7 +98,6 @@ git clone https://github.com/your-username/Ciale.git
 cd Ciale
 
 # Install dependencies
-cd ciale-app
 npm install
 
 # ⚠️ If npm fails with "Invalid Version" error (npm v11 bug with @tailwindcss/oxide):
@@ -109,7 +107,6 @@ npx npm@10 install
 #### Development
 
 ```bash
-cd ciale-app
 npm run dev
 ```
 
@@ -189,11 +186,10 @@ Edit the `@theme inline` block in `src/app/globals.css`.
 
 1. Push to GitHub
 2. Import the repository on [vercel.com](https://vercel.com)
-3. Set **Root Directory** to `ciale-app`
-4. Framework Preset: **Next.js** (auto-detected)
-5. Deploy
+3. Framework Preset: **Next.js** (auto-detected)
+4. Deploy
 
-No environment variables are required.
+No environment variables are required. No root directory configuration needed — `package.json` is at the repo root.
 
 ### Known Limitations
 
@@ -246,37 +242,36 @@ El sitio funciona como una **aplicación de una sola página** con navegación s
 
 ```
 Ciale/
-├── AGENTS.md                    # Instrucciones para herramientas de IA
-├── README.md                    # Este archivo
-└── ciale-app/                   # ← Raíz de la aplicación Next.js
-    ├── package.json
-    ├── tsconfig.json
-    ├── next.config.ts
-    ├── postcss.config.mjs
-    ├── eslint.config.mjs
-    ├── public/                  # Assets estáticos (solo SVGs por defecto)
-    └── src/
-        ├── app/
-        │   ├── globals.css      # Tema Tailwind v4 + estilos globales
-        │   ├── layout.tsx       # Layout raíz: fuentes, metadata, CartProvider
-        │   └── page.tsx         # Página única: ensambla todas las secciones
-        ├── components/
-        │   ├── AnnouncementBar.tsx    # Barra promocional superior
-        │   ├── Header.tsx             # Navbar fijo + menú móvil
-        │   ├── HeroSection.tsx        # Hero de aterrizaje con CTA
-        │   ├── ProductCard.tsx        # Tarjeta individual de producto
-        │   ├── ProductGrid.tsx        # Cuadrícula filtrable + búsqueda
-        │   ├── QuickViewModal.tsx     # Modal de detalle de producto
-        │   ├── CartDrawer.tsx         # Panel lateral del carrito
-        │   ├── PersonalizaSection.tsx # Sección de personalización
-        │   ├── SobreNosotros.tsx      # Sobre nosotros + propuestas de valor
-        │   └── Footer.tsx             # Footer con contacto
-        ├── context/
-        │   └── CartContext.tsx   # Estado del carrito + localStorage
-        ├── data/
-        │   └── products.ts      # 12 definiciones de productos hardcodeados
-        └── lib/
-            └── utils.ts         # cn(), formatCOP(), generateWhatsAppLink()
+├── AGENTS.md              # Instrucciones para herramientas de IA
+├── README.md              # Este archivo
+├── package.json
+├── tsconfig.json
+├── next.config.ts
+├── postcss.config.mjs
+├── eslint.config.mjs
+├── public/                # Assets estáticos (solo SVGs por defecto)
+└── src/
+    ├── app/
+    │   ├── globals.css    # Tema Tailwind v4 + estilos globales
+    │   ├── layout.tsx     # Layout raíz: fuentes, metadata, CartProvider
+    │   └── page.tsx       # Página única: ensambla todas las secciones
+    ├── components/
+    │   ├── AnnouncementBar.tsx    # Barra promocional superior
+    │   ├── Header.tsx             # Navbar fijo + menú móvil
+    │   ├── HeroSection.tsx        # Hero de aterrizaje con CTA
+    │   ├── ProductCard.tsx        # Tarjeta individual de producto
+    │   ├── ProductGrid.tsx        # Cuadrícula filtrable + búsqueda
+    │   ├── QuickViewModal.tsx     # Modal de detalle de producto
+    │   ├── CartDrawer.tsx         # Panel lateral del carrito
+    │   ├── PersonalizaSection.tsx # Sección de personalización
+    │   ├── SobreNosotros.tsx      # Sobre nosotros + propuestas de valor
+    │   └── Footer.tsx             # Footer con contacto
+    ├── context/
+    │   └── CartContext.tsx   # Estado del carrito + localStorage
+    ├── data/
+    │   └── products.ts      # 12 definiciones de productos hardcodeados
+    └── lib/
+        └── utils.ts         # cn(), formatCOP(), generateWhatsAppLink()
 ```
 
 ### Primeros Pasos
@@ -294,7 +289,6 @@ git clone https://github.com/tu-usuario/Ciale.git
 cd Ciale
 
 # Instalar dependencias
-cd ciale-app
 npm install
 
 # ⚠️ Si npm falla con error "Invalid Version" (bug de npm v11 con @tailwindcss/oxide):
@@ -304,7 +298,6 @@ npx npm@10 install
 #### Desarrollo
 
 ```bash
-cd ciale-app
 npm run dev
 ```
 
@@ -384,11 +377,10 @@ Edita el bloque `@theme inline` en `src/app/globals.css`.
 
 1. Subir a GitHub
 2. Importar el repositorio en [vercel.com](https://vercel.com)
-3. Configurar **Root Directory** a `ciale-app`
-4. Framework Preset: **Next.js** (detectado automáticamente)
-5. Desplegar
+3. Framework Preset: **Next.js** (detectado automáticamente)
+4. Desplegar
 
-No se requieren variables de entorno.
+No se requieren variables de entorno. No se necesita configurar directorio raíz — `package.json` está en la raíz del repositorio.
 
 ### Limitaciones Conocidas
 
