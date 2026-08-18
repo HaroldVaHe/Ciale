@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { MapPin, Phone, Instagram, Heart } from "lucide-react";
 
 export default function Footer() {
@@ -9,11 +8,11 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
         <div className="grid md:grid-cols-3 gap-12">
           {/* Brand */}
-          <div>
+          <div className="text-center md:text-left">
             <img
               src="/CialeClaro.png"
               alt="CIALÉ"
-              className="h-10 w-auto mb-2"
+              className="h-10 w-auto mb-2 mx-auto md:mx-0"
             />
             <p className="mt-4 text-sm text-white/60 leading-relaxed">
               Cada pieza de este catálogo fue creada con dedicación y amor para
