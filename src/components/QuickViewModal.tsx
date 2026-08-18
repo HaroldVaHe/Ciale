@@ -80,12 +80,12 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
             <div className="grid md:grid-cols-2">
               {/* Image */}
               <div
-                className={`aspect-square bg-gradient-to-br ${product.gradient} relative overflow-hidden`}
+                className={`aspect-[4/5] md:aspect-auto md:h-full bg-gradient-to-br ${product.gradient} relative overflow-hidden`}
               >
                 <img
                   src={product.image}
                   alt={product.name}
-                  className="absolute inset-0 w-full h-full object-cover"
+                  className="w-full h-full object-cover"
                 />
                 {product.customizable && (
                   <div className="absolute top-4 left-4 bg-gold/90 text-white text-[10px] tracking-widest uppercase px-2.5 py-1 rounded-full font-medium">
