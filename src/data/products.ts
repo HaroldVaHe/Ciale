@@ -28,7 +28,7 @@ export const products: Product[] = [
     price: 50000,
     category: "marina",
     tags: ["dije", "marino", "coral"],
-    image: "/products/Coral.png",
+    image: "/products/Coral.webp",
     gradient: "from-orange-200 via-rose-100 to-amber-50",
     variants: [
       { id: "coral-natural", name: "Coral Natural", color: "Coral", hex: "#E79C88" },
@@ -45,7 +45,7 @@ export const products: Product[] = [
     price: 50000,
     category: "personalizable",
     tags: ["dije", "personalizable", "inicial", "rosa"],
-    image: "/products/AuraRosa.png",
+    image: "/products/AuraRosa.webp",
     gradient: "from-pink-200 via-rose-100 to-pink-50",
     variants: [
       { id: "aura-rosa-oro", name: "Rosa Dorado", color: "Rosa", hex: "#E8D3C8" },
@@ -63,7 +63,7 @@ export const products: Product[] = [
     price: 50000,
     category: "marina",
     tags: ["dije", "marino", "texturizado"],
-    image: "/products/Nemo.png",
+    image: "/products/Nemo.webp",
     gradient: "from-blue-200 via-cyan-100 to-teal-50",
     variants: [
       { id: "nemo-plata", name: "Plata", color: "Plata", hex: "#C0C0C0" },
@@ -80,7 +80,7 @@ export const products: Product[] = [
     price: 50000,
     category: "dijes",
     tags: ["dije", "nácar", "iridiscente"],
-    image: "/products/Nacar.png",
+    image: "/products/Nacar.webp",
     gradient: "from-amber-50 via-rose-50 to-blue-50",
     variants: [
       { id: "nacar-natural", name: "Nácar Natural", color: "Nácar", hex: "#F5E6D3" },
@@ -97,7 +97,7 @@ export const products: Product[] = [
     price: 50000,
     category: "coleccion",
     tags: ["dije", "familia", "unión"],
-    image: "/products/Ohana.png",
+    image: "/products/Ohana.webp",
     gradient: "from-rose-200 via-orange-100 to-yellow-50",
     variants: [
       { id: "ohana-oro", name: "Oro", color: "Oro", hex: "#D4AF37" },
@@ -114,7 +114,7 @@ export const products: Product[] = [
     price: 50000,
     category: "dijes",
     tags: ["dije", "geométrico", "moderno"],
-    image: "/products/Lula.png",
+    image: "/products/Lula.webp",
     gradient: "from-stone-200 via-amber-50 to-stone-100",
     variants: [
       { id: "lula-negro", name: "Negro Mate", color: "Negro", hex: "#2D2926" },
@@ -131,7 +131,7 @@ export const products: Product[] = [
     price: 50000,
     category: "dijes",
     tags: ["dije", "piedras", "translúcido", "destellos"],
-    image: "/products/Aurora.png",
+    image: "/products/Aurora.webp",
     gradient: "from-violet-200 via-pink-100 to-amber-50",
     variants: [
       { id: "aurora-rosa", name: "Rosa Aurora", color: "Rosa", hex: "#F2B5D4" },
@@ -148,7 +148,7 @@ export const products: Product[] = [
     price: 50000,
     category: "coleccion",
     tags: ["collar", "cuentas", "detalles"],
-    image: "/products/Maia.png",
+    image: "/products/Maia.webp",
     gradient: "from-green-100 via-amber-50 to-rose-50",
     variants: [
       { id: "maia-salvia", name: "Salvia", color: "Salvia", hex: "#A3B18A" },
@@ -165,7 +165,7 @@ export const products: Product[] = [
     price: 50000,
     category: "dijes",
     tags: ["dije", "corazón", "amor"],
-    image: "/products/Cora.png",
+    image: "/products/Cora.webp",
     gradient: "from-rose-200 via-red-100 to-pink-50",
     variants: [
       { id: "cora-rosa", name: "Rosa", color: "Rosa", hex: "#E79C88" },
@@ -182,7 +182,7 @@ export const products: Product[] = [
     price: 50000,
     category: "coleccion",
     tags: ["collar", "clásico", "elegante", "brillantes"],
-    image: "/products/Margot.png",
+    image: "/products/Margot.webp",
     gradient: "from-gray-100 via-amber-50 to-gray-50",
     variants: [
       { id: "margot-plata", name: "Plata", color: "Plata", hex: "#C0C0C0" },
@@ -199,7 +199,7 @@ export const products: Product[] = [
     price: 50000,
     category: "dijes",
     tags: ["dije", "vintage", "chic", "engaste"],
-    image: "/products/Greta.png",
+    image: "/products/Greta.webp",
     gradient: "from-amber-200 via-orange-100 to-yellow-50",
     variants: [
       { id: "greta-antiguo", name: "Oro Antiguo", color: "Antiguo", hex: "#B8860B" },
@@ -216,7 +216,7 @@ export const products: Product[] = [
     price: 50000,
     category: "coleccion",
     tags: ["collar", "minimalista", "contemporáneo"],
-    image: "/products/Elle.png",
+    image: "/products/Elle.webp",
     gradient: "from-stone-100 via-stone-50 to-white",
     variants: [
       { id: "elle-plata", name: "Plata", color: "Plata", hex: "#C0C0C0" },

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ShoppingBag, Search, Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/context/CartContext";
@@ -33,9 +34,12 @@ export default function Header() {
 
           {/* Logo */}
           <Link href="/" className="flex items-center">
-            <img
-              src="/CialeMarron.png"
+            <Image
+              src="/CialeMarron.webp"
               alt="CIALÉ"
+              width={120}
+              height={48}
+              priority
               className="h-10 md:h-12 w-auto"
             />
           </Link>

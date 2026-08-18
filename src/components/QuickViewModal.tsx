@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { X, ShoppingBag, MessageCircle, Plus, Minus } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { formatCOP } from "@/lib/utils";
@@ -88,10 +89,12 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
             onMouseEnter={() => setIsZooming(true)}
             onMouseLeave={() => setIsZooming(false)}
           >
-            <img
+            <Image
               src={product.image}
               alt={product.name}
-              className="w-full h-full object-cover transition-transform duration-200 ease-out"
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover transition-transform duration-200 ease-out"
               style={{
                 transformOrigin: `${mousePos.x}% ${mousePos.y}%`,
                 transform: isZooming ? "scale(2)" : "scale(1)",

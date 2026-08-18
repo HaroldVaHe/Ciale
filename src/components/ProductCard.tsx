@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import { ShoppingBag, MessageCircle, Eye, Plus } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { formatCOP } from "@/lib/utils";
@@ -47,11 +48,12 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
         className={`relative aspect-[4/5] bg-gradient-to-br ${product.gradient} overflow-hidden cursor-pointer`}
         onClick={() => onQuickView(product)}
       >
-        <img
+        <Image
           src={product.image}
           alt={product.name}
-          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          loading="lazy"
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+          className="object-cover group-hover:scale-105 transition-transform duration-500"
         />
 
         {/* Hover overlay */}

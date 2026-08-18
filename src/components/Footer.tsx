@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { MapPin, Phone, Instagram, Heart } from "lucide-react";
 
 export default function Footer() {
@@ -9,9 +10,11 @@ export default function Footer() {
         <div className="grid md:grid-cols-3 gap-12">
           {/* Brand */}
           <div className="text-center md:text-left">
-            <img
-              src="/CialeClaro.png"
+            <Image
+              src="/CialeClaro.webp"
               alt="CIALÉ"
+              width={96}
+              height={96}
               className="h-24 w-auto mb-2 mx-auto md:mx-0"
             />
             <p className="mt-4 text-sm text-white/60 leading-relaxed">
