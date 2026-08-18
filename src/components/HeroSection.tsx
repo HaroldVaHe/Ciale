@@ -7,9 +7,19 @@ export default function HeroSection() {
   return (
     <section
       id="inicio"
-      className="relative overflow-hidden bg-gradient-to-b from-cream via-cream-dark to-nude/20"
+      className="relative overflow-hidden"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 lg:py-40">
+      {/* Banner background */}
+      <div className="absolute inset-0">
+        <img
+          src="/Banner.png"
+          alt=""
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-cream/60" />
+      </div>
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 lg:py-40">
         <div className="text-center max-w-3xl mx-auto">
           <motion.p
             initial={{ opacity: 0, y: 20 }}

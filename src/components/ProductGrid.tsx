@@ -27,15 +27,6 @@ export default function ProductGrid() {
 
   return (
     <>
-      {/* Banner */}
-      <div className="w-full h-48 md:h-64 lg:h-80">
-        <img
-          src="/banner.png"
-          alt="CIALÉ Colección"
-          className="w-full h-full object-cover"
-        />
-      </div>
-
       <section id="catalogo" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
         {/* Section header */}
         <div className="text-center mb-12">
