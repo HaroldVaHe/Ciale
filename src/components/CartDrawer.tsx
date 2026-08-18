@@ -82,10 +82,12 @@ export default function CartDrawer() {
                         className="flex gap-4 bg-white rounded-lg border border-border p-3"
                       >
                         {/* Mini image */}
-                        <div className="w-16 h-16 rounded-md bg-gradient-to-br from-nude to-coral/20 flex items-center justify-center flex-shrink-0">
-                          <span className="font-serif text-lg text-coffee/40 italic">
-                            {item.name[0]}
-                          </span>
+                        <div className="w-16 h-16 rounded-md overflow-hidden flex-shrink-0 bg-gradient-to-br from-nude to-coral/20">
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="w-full h-full object-cover"
+                          />
                         </div>
 
                         {/* Info */}

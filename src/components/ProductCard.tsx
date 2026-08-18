@@ -52,16 +52,12 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
         className={`relative aspect-[4/5] bg-gradient-to-br ${product.gradient} overflow-hidden cursor-pointer`}
         onClick={() => onQuickView(product)}
       >
-        {/* Placeholder jewelry icon */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-24 h-24 rounded-full border-2 border-white/40 flex items-center justify-center">
-            <div className="w-16 h-16 rounded-full border border-white/30 flex items-center justify-center">
-              <span className="font-serif text-3xl text-white/60 italic">
-                {product.name[0]}
-              </span>
-            </div>
-          </div>
-        </div>
+        <img
+          src={product.image}
+          alt={product.name}
+          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          loading="lazy"
+        />
 
         {/* Hover overlay */}
         <div className="absolute inset-0 bg-charcoal/0 group-hover:bg-charcoal/10 transition-colors duration-300 flex items-center justify-center">
