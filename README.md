@@ -193,11 +193,21 @@ No environment variables are required. No root directory configuration needed �
 
 ### Known Limitations
 
-- **No product images**: The `public/` directory only contains default Next.js SVGs. Product cards display gradient placeholders with the product's initial letter. To add real images, place them in `public/products/` and update the `image` field in `products.ts`.
-- **"coleccion" category**: Products in this category exist in data but have no dedicated filter tab — they're only findable via search.
 - **No backend**: All data is hardcoded. No API routes, no CMS integration, no database.
 - **No tests**: No test framework is configured.
 - **Single locale**: UI is entirely in Spanish (Colombian). No i18n support.
+
+### Roadmap
+
+| Phase | Status | Description |
+|---|---|---|
+| **Fase 1** | ✅ Done | Frontend storefront — products, cart, WhatsApp checkout, WebP images |
+| **Fase 2** | Pending | Supabase Foundation — project setup, schema design, connection |
+| **Fase 3** | Pending | Admin Authentication — Supabase Auth, login page, protected routes |
+| **Fase 4** | Pending | Product CRUD — admin dashboard, create/edit/delete products |
+| **Fase 5** | Pending | Categories & Organization — category management, tags, ordering |
+| **Fase 6** | Pending | Orders & Checkout — order storage, admin view, status tracking |
+| **Fase 7** | Pending | Polish & Production — SEO, analytics, performance, testing |
 
 ---
 
@@ -384,11 +394,21 @@ No se requieren variables de entorno. No se necesita configurar directorio raíz
 
 ### Limitaciones Conocidas
 
-- **Sin imágenes de producto**: El directorio `public/` solo contiene SVGs por defecto de Next.js. Las tarjetas de producto muestran placeholders degradados con la inicial del producto. Para agregar imágenes reales, colócalas en `public/products/` y actualiza el campo `image` en `products.ts`.
-- **Categoría "coleccion"**: Los productos en esta categoría existen en los datos pero no tienen pestaña de filtro dedicada — solo se encuentran mediante búsqueda.
 - **Sin backend**: Todos los datos están hardcodeados. Sin rutas API, sin integración CMS, sin base de datos.
 - **Sin tests**: No hay framework de pruebas configurado.
 - **Solo un idioma**: La interfaz está completamente en español (colombiano). Sin soporte i18n.
+
+### Hoja de Ruta
+
+| Fase | Estado | Descripción |
+|---|---|---|
+| **Fase 1** | ✅ Listo | Frontend storefront — productos, carrito, checkout WhatsApp, imágenes WebP |
+| **Fase 2** | Pendiente | Supabase Foundation — configuración del proyecto, diseño de schema, conexión |
+| **Fase 3** | Pendiente | Autenticación Admin — Supabase Auth, página de login, rutas protegidas |
+| **Fase 4** | Pendiente | CRUD de Productos — dashboard admin, crear/editar/eliminar productos |
+| **Fase 5** | Pendiente | Categorías y Organización — gestión de categorías, tags, ordenamiento |
+| **Fase 6** | Pendiente | Pedidos y Checkout — almacenamiento de pedidos, vista admin, estados |
+| **Fase 7** | Pendiente | Pulido y Producción — SEO, analytics, performance, testing |
 
 ---
 
