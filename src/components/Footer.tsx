@@ -12,7 +12,7 @@ export default function Footer() {
             <img
               src="/CialeClaro.png"
               alt="CIALÉ"
-              className="h-14 w-auto mb-2 mx-auto md:mx-0"
+              className="h-24 w-auto mb-2 mx-auto md:mx-0"
             />
             <p className="mt-4 text-sm text-white/60 leading-relaxed">
               Cada pieza de este catálogo fue creada con dedicación y amor para
