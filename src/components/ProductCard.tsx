@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingBag, MessageCircle, Eye, Plus } from "lucide-react";
 import { useCart } from "@/context/CartContext";
@@ -15,17 +15,6 @@ interface ProductCardProps {
 export default function ProductCard({ product, onQuickView }: ProductCardProps) {
   const { addItem } = useCart();
   const [showAdded, setShowAdded] = useState(false);
-  const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
-  const [isHovering, setIsHovering] = useState(false);
-  const imgRef = useRef<HTMLDivElement>(null);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!imgRef.current) return;
-    const rect = imgRef.current.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    setMousePos({ x, y });
-  };
 
   const handleAddToCart = () => {
     addItem({
@@ -53,23 +42,15 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
       exit={{ opacity: 0, y: 20 }}
       className="group bg-white rounded-lg border border-border shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
     >
-      {/* Image area with zoom */}
+      {/* Image area */}
       <div
-        ref={imgRef}
-        className={`relative aspect-[4/5] bg-gradient-to-br ${product.gradient} overflow-hidden cursor-crosshair`}
-        onMouseMove={handleMouseMove}
-        onMouseEnter={() => setIsHovering(true)}
-        onMouseLeave={() => setIsHovering(false)}
+        className={`relative aspect-[4/5] bg-gradient-to-br ${product.gradient} overflow-hidden cursor-pointer`}
         onClick={() => onQuickView(product)}
       >
         <img
           src={product.image}
           alt={product.name}
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-200 ease-out"
-          style={{
-            transformOrigin: `${mousePos.x}% ${mousePos.y}%`,
-            transform: isHovering ? "scale(1.8)" : "scale(1)",
-          }}
+          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           loading="lazy"
         />
 

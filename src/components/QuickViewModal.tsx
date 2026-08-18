@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { X, ShoppingBag, MessageCircle, Plus, Minus } from "lucide-react";
 import { useCart } from "@/context/CartContext";
@@ -16,6 +16,17 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
   const { addItem } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [showAdded, setShowAdded] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
+  const [isZooming, setIsZooming] = useState(false);
+  const imgRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!imgRef.current) return;
+    const rect = imgRef.current.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setMousePos({ x, y });
+  };
 
   if (!product) return null;
 
@@ -71,12 +82,20 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
         <div className="grid md:grid-cols-2">
           {/* Image */}
           <div
-            className={`aspect-[4/5] md:aspect-auto md:h-full bg-gradient-to-br ${product.gradient} relative overflow-hidden`}
+            ref={imgRef}
+            className={`aspect-[4/5] md:aspect-auto md:h-full bg-gradient-to-br ${product.gradient} relative overflow-hidden cursor-crosshair`}
+            onMouseMove={handleMouseMove}
+            onMouseEnter={() => setIsZooming(true)}
+            onMouseLeave={() => setIsZooming(false)}
           >
             <img
               src={product.image}
               alt={product.name}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover transition-transform duration-200 ease-out"
+              style={{
+                transformOrigin: `${mousePos.x}% ${mousePos.y}%`,
+                transform: isZooming ? "scale(2)" : "scale(1)",
+              }}
             />
           </div>
 
