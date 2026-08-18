@@ -10,12 +10,11 @@ export default function Footer() {
         <div className="grid md:grid-cols-3 gap-12">
           {/* Brand */}
           <div>
-            <span className="font-serif text-2xl font-semibold tracking-[0.2em]">
-              C I A L É
-            </span>
-            <p className="text-[9px] tracking-[0.4em] uppercase text-white/40 font-medium mt-0.5">
-              Jewelry
-            </p>
+            <img
+              src="/CialeClaro.png"
+              alt="CIALÉ"
+              className="h-10 w-auto mb-2"
+            />
             <p className="mt-4 text-sm text-white/60 leading-relaxed">
               Cada pieza de este catálogo fue creada con dedicación y amor para
               acompañar tus mejores momentos.

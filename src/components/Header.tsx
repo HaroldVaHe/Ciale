@@ -32,13 +32,12 @@ export default function Header() {
           </button>
 
           {/* Logo */}
-          <Link href="/" className="flex flex-col items-center gap-0">
-            <span className="font-serif text-xl md:text-2xl font-semibold tracking-[0.3em] text-coffee">
-              C I A L É
-            </span>
-            <span className="text-[9px] tracking-[0.4em] uppercase text-gray-soft font-medium -mt-1">
-              Jewelry
-            </span>
+          <Link href="/" className="flex items-center">
+            <img
+              src="/CialeMarron.png"
+              alt="CIALÉ"
+              className="h-10 md:h-12 w-auto"
+            />
           </Link>
 
           {/* Desktop nav */}

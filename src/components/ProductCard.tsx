@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingBag, MessageCircle, Eye, Plus } from "lucide-react";
 import { useCart } from "@/context/CartContext";
@@ -14,19 +14,27 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, onQuickView }: ProductCardProps) {
   const { addItem } = useCart();
-  const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
-  const [initial, setInitial] = useState("");
   const [showAdded, setShowAdded] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
+  const [isHovering, setIsHovering] = useState(false);
+  const imgRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!imgRef.current) return;
+    const rect = imgRef.current.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setMousePos({ x, y });
+  };
 
   const handleAddToCart = () => {
     addItem({
       productId: product.id,
       name: product.name,
       price: product.price,
-      variantId: selectedVariant.id,
-      variantName: selectedVariant.name,
-      variantHex: selectedVariant.hex,
-      initial: product.customizable ? initial : undefined,
+      variantId: product.variants[0]?.id || "",
+      variantName: product.variants[0]?.name || "",
+      variantHex: product.variants[0]?.hex || "",
       image: product.image,
     });
     setShowAdded(true);
@@ -34,9 +42,7 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
   };
 
   const waLink = `https://wa.me/573203039847?text=${encodeURIComponent(
-    `Hola CIALÉ! Me interesa el collar "${product.name}" en color ${selectedVariant.name}${
-      product.customizable && initial ? ` con inicial "${initial}"` : ""
-    }. ¿Está disponible?`
+    `Hola CIALÉ! Me interesa el collar "${product.name}". ¿Está disponible?`
   )}`;
 
   return (
@@ -47,36 +53,37 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
       exit={{ opacity: 0, y: 20 }}
       className="group bg-white rounded-lg border border-border shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
     >
-      {/* Image area */}
+      {/* Image area with zoom */}
       <div
-        className={`relative aspect-[4/5] bg-gradient-to-br ${product.gradient} overflow-hidden cursor-pointer`}
+        ref={imgRef}
+        className={`relative aspect-[4/5] bg-gradient-to-br ${product.gradient} overflow-hidden cursor-crosshair`}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={() => setIsHovering(true)}
+        onMouseLeave={() => setIsHovering(false)}
         onClick={() => onQuickView(product)}
       >
         <img
           src={product.image}
           alt={product.name}
-          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-200 ease-out"
+          style={{
+            transformOrigin: `${mousePos.x}% ${mousePos.y}%`,
+            transform: isHovering ? "scale(1.8)" : "scale(1)",
+          }}
           loading="lazy"
         />
 
         {/* Hover overlay */}
-        <div className="absolute inset-0 bg-charcoal/0 group-hover:bg-charcoal/10 transition-colors duration-300 flex items-center justify-center">
+        <div className="absolute inset-0 bg-charcoal/0 group-hover:bg-charcoal/10 transition-colors duration-300 flex items-center justify-center pointer-events-none">
           <motion.button
             initial={{ opacity: 0, scale: 0.8 }}
             whileHover={{ scale: 1.05 }}
-            className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full text-xs tracking-widest uppercase font-medium text-coffee flex items-center gap-2"
+            className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full text-xs tracking-widest uppercase font-medium text-coffee flex items-center gap-2 pointer-events-auto"
           >
             <Eye size={14} />
             Vista rápida
           </motion.button>
         </div>
-
-        {/* Quick view badge */}
-        {product.customizable && (
-          <div className="absolute top-3 left-3 bg-gold/90 text-white text-[10px] tracking-widest uppercase px-2.5 py-1 rounded-full font-medium">
-            Personalizable
-          </div>
-        )}
       </div>
 
       {/* Info */}
@@ -87,41 +94,6 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
         <p className="text-xs text-gray-soft mb-3 line-clamp-2 leading-relaxed">
           {product.description}
         </p>
-
-        {/* Color swatches */}
-        <div className="flex items-center gap-2 mb-3">
-          {product.variants.map((v) => (
-            <button
-              key={v.id}
-              onClick={() => setSelectedVariant(v)}
-              title={v.name}
-              className={`w-5 h-5 rounded-full border-2 transition-all duration-200 ${
-                selectedVariant.id === v.id
-                  ? "border-coffee scale-110 ring-1 ring-coffee/20"
-                  : "border-border hover:border-gray-light"
-              }`}
-              style={{ backgroundColor: v.hex }}
-            />
-          ))}
-          <span className="text-[10px] text-gray-soft ml-1">{selectedVariant.name}</span>
-        </div>
-
-        {/* Customizable input */}
-        {product.customizable && (
-          <div className="mb-3">
-            <label className="text-[10px] tracking-widest uppercase text-gray-soft font-medium block mb-1">
-              {product.customizableLabel || "Inicial"}
-            </label>
-            <input
-              type="text"
-              maxLength={1}
-              value={initial}
-              onChange={(e) => setInitial(e.target.value.toUpperCase())}
-              placeholder="A"
-              className="w-12 h-9 text-center border border-border rounded-md text-sm font-serif text-coffee focus:outline-none focus:border-coral focus:ring-1 focus:ring-coral/20 transition-all"
-            />
-          </div>
-        )}
 
         {/* Price */}
         <p className="font-serif text-xl font-semibold text-coffee mb-3">
