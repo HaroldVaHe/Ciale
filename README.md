@@ -200,7 +200,7 @@ No environment variables are required for the storefront. The only optional one 
 
 Technical SEO and answer-engine optimization are built in:
 
-- **Metadata** (`src/app/layout.tsx`): `metadataBase`, canonical URL, Open Graph and Twitter cards using `/Banner.webp` as share image
+- **Metadata** (`src/app/layout.tsx`): `metadataBase`, canonical URL, Open Graph and Twitter cards using `/og-image.jpg` (1200×630 JPEG — WhatsApp-safe, regenerated from the banner by `scripts/generate-og-image.mjs`) as share image
 - **Structured data (JSON-LD)**: `JewelryStore` (local business), `WebSite`, an `ItemList` of all 12 products with COP prices, and `FAQPage` — injected in the root layout
 - **Visible FAQ**: accordion section rendered by `FaqSection.tsx`; its content lives in `src/data/faqs.ts` and mirrors the `FAQPage` schema
 - **Sitemap & robots**: generated at build time by `src/app/sitemap.ts` and `src/app/robots.ts`
@@ -429,7 +429,7 @@ No se requieren variables de entorno para la tienda. La única opcional es `NEXT
 
 El sitio incluye SEO técnico y optimización para motores de respuesta (answer engines):
 
-- **Metadata** (`src/app/layout.tsx`): `metadataBase`, URL canónica, tarjetas Open Graph y Twitter usando `/Banner.webp` como imagen de compartir
+- **Metadata** (`src/app/layout.tsx`): `metadataBase`, URL canónica, tarjetas Open Graph y Twitter usando `/og-image.jpg` (1200×630 JPEG — segura para WhatsApp, regenerada desde el banner con `scripts/generate-og-image.mjs`) como imagen de compartir
 - **Datos estructurados (JSON-LD)**: `JewelryStore` (negocio local), `WebSite`, un `ItemList` con los 12 productos y sus precios en COP, y `FAQPage` — inyectados en el layout raíz
 - **FAQ visible**: sección acordeón renderizada por `FaqSection.tsx`; su contenido vive en `src/data/faqs.ts` y refleja el schema `FAQPage`
 - **Sitemap y robots**: generados en build por `src/app/sitemap.ts` y `src/app/robots.ts`

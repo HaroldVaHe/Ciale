@@ -45,9 +45,9 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/Banner.webp",
-        width: 1920,
-        height: 792,
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
         alt: "CIALÉ — Joyería artesanal colombiana",
       },
     ],
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: SITE_NAME,
     description: SITE_TAGLINE,
-    images: ["/Banner.webp"],
+    images: ["/og-image.jpg"],
   },
   robots: { index: true, follow: true },
   ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION

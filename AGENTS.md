@@ -50,6 +50,7 @@ No test framework is configured. No typecheck script exists (use `npx tsc --noEm
 - **Personalization postponed**: Initial-engraving feature is not implemented. Its UI was removed (`PersonalizaSection`, nav links, `personalizable` filter/category, `customizable` product fields). Dormant plumbing kept intentionally for the future feature: `CartItem.initial` (`CartContext.tsx`) and the `initial` param of `generateWhatsAppLink` (`lib/utils.ts`). Do not advertise personalization anywhere until the real flow exists.
 - **Locale**: All UI text is in Spanish (Colombian). `lang="es"`, OpenGraph `locale: "es_CO"`.
 - **Product images**: WebP optimized (~11-16 KB each) in `public/products/`. Banner in `public/Banner.webp` (~100 KB). All images use `next/image`.
+- **OG share image**: `public/og-image.jpg` (1200×630 JPEG, WhatsApp-safe). Regenerate with `node scripts/generate-og-image.mjs`. Don't use WebP for `og:image` — WhatsApp's crawler often fails to render it.
 - **Recompression**: Run `node scripts/optimize-images.mjs` after adding new PNG images to `public/`.
 
 ## Roadmap — Fases de Desarrollo
