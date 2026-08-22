@@ -31,7 +31,7 @@ export default function HeroSection() {
             transition={{ delay: 0.2 }}
             className="text-xs tracking-[0.4em] uppercase font-medium text-coral mb-6"
           >
-            Artesanal &hecho a mano
+            Artesanal · Hecho a mano
           </motion.p>
 
           <motion.h1

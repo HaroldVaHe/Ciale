@@ -4,13 +4,13 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Minus, Plus, Trash2, MessageCircle, ShoppingBag } from "lucide-react";
 import { useCart } from "@/context/CartContext";
-import { formatCOP, generateWhatsAppLink } from "@/lib/utils";
+import { WHATSAPP_NUMBER, formatCOP, generateWhatsAppLink } from "@/lib/utils";
 
 export default function CartDrawer() {
   const { items, isOpen, closeCart, updateQuantity, removeItem, total } = useCart();
 
   const waLink = generateWhatsAppLink(
-    "573203039847",
+    WHATSAPP_NUMBER,
     items.map((item) => ({
       name: item.name,
       quantity: item.quantity,

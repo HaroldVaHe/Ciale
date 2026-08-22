@@ -10,13 +10,11 @@ export interface Product {
   name: string;
   description: string;
   price: number;
-  category: "dijes" | "personalizable" | "marina" | "coleccion";
+  category: "dijes" | "marina" | "coleccion";
   tags: string[];
   image: string;
   gradient: string;
   variants: ProductVariant[];
-  customizable: boolean;
-  customizableLabel?: string;
 }
 
 export const products: Product[] = [
@@ -35,16 +33,15 @@ export const products: Product[] = [
       { id: "coral-rojo", name: "Coral Rojo", color: "Rojo", hex: "#C75B39" },
       { id: "coral-rosado", name: "Coral Rosado", color: "Rosado", hex: "#F2B5A0" },
     ],
-    customizable: false,
   },
   {
     id: "aura-rosa",
     name: "Aura Rosa",
     description:
-      "Dije delicado con acabado en rosa empolvado. Personalízalo con la inicial de alguien especial.",
+      "Dije delicado con acabado en rosa empolvado. Una pieza suave y elegante, hecha a mano con dedicación.",
     price: 50000,
-    category: "personalizable",
-    tags: ["dije", "personalizable", "inicial", "rosa"],
+    category: "dijes",
+    tags: ["dije", "rosa", "delicado"],
     image: "/products/AuraRosa.webp",
     gradient: "from-pink-200 via-rose-100 to-pink-50",
     variants: [
@@ -52,8 +49,6 @@ export const products: Product[] = [
       { id: "aura-rosa-plata", name: "Rosa Plata", color: "Plata", hex: "#C0C0C0" },
       { id: "aura-rosa-oro-24k", name: "Rosa Oro 24K", color: "Oro", hex: "#D4AF37" },
     ],
-    customizable: true,
-    customizableLabel: "Inicial",
   },
   {
     id: "nemo",
@@ -70,7 +65,6 @@ export const products: Product[] = [
       { id: "nemo-oro", name: "Oro", color: "Oro", hex: "#D4AF37" },
       { id: "nemo-cobre", name: "Cobre", color: "Cobre", hex: "#B87333" },
     ],
-    customizable: false,
   },
   {
     id: "nacar",
@@ -87,7 +81,6 @@ export const products: Product[] = [
       { id: "nacar-rosa", name: "Nácar Rosa", color: "Rosa", hex: "#F2C4C4" },
       { id: "nacar-azul", name: "Nácar Azul", color: "Azul", hex: "#B8D4E3" },
     ],
-    customizable: false,
   },
   {
     id: "ohana",
@@ -104,7 +97,6 @@ export const products: Product[] = [
       { id: "ohana-plata", name: "Plata", color: "Plata", hex: "#C0C0C0" },
       { id: "ohana-rosa", name: "Rosa Dorado", color: "Rosa", hex: "#E8D3C8" },
     ],
-    customizable: false,
   },
   {
     id: "lula",
@@ -121,7 +113,6 @@ export const products: Product[] = [
       { id: "lula-dorado", name: "Dorado", color: "Dorado", hex: "#D4AF37" },
       { id: "lula-plata", name: "Plata", color: "Plata", hex: "#C0C0C0" },
     ],
-    customizable: false,
   },
   {
     id: "aurora",
@@ -138,7 +129,6 @@ export const products: Product[] = [
       { id: "aurora-lila", name: "Lila", color: "Lila", hex: "#C8A2C8" },
       { id: "aurora-dorado", name: "Dorado", color: "Dorado", hex: "#D4AF37" },
     ],
-    customizable: false,
   },
   {
     id: "maia",
@@ -155,7 +145,6 @@ export const products: Product[] = [
       { id: "maia-arena", name: "Arena", color: "Arena", hex: "#E8D3C8" },
       { id: "maia-coral", name: "Coral", color: "Coral", hex: "#E79C88" },
     ],
-    customizable: false,
   },
   {
     id: "cora",
@@ -172,7 +161,6 @@ export const products: Product[] = [
       { id: "cora-rojo", name: "Rojo", color: "Rojo", hex: "#C75B39" },
       { id: "cora-oro", name: "Dorado", color: "Oro", hex: "#D4AF37" },
     ],
-    customizable: false,
   },
   {
     id: "margot",
@@ -189,7 +177,6 @@ export const products: Product[] = [
       { id: "margot-oro", name: "Oro", color: "Oro", hex: "#D4AF37" },
       { id: "margot-rosegold", name: "Rose Gold", color: "Rosa", hex: "#E8D3C8" },
     ],
-    customizable: false,
   },
   {
     id: "greta",
@@ -206,7 +193,6 @@ export const products: Product[] = [
       { id: "greta-plata", name: "Plata Vieja", color: "Plata", hex: "#A9A9A9" },
       { id: "greta-cobre", name: "Cobre", color: "Cobre", hex: "#B87333" },
     ],
-    customizable: false,
   },
   {
     id: "elle",
@@ -223,15 +209,14 @@ export const products: Product[] = [
       { id: "elle-oro", name: "Dorado", color: "Oro", hex: "#D4AF37" },
       { id: "elle-rosa", name: "Rose Gold", color: "Rosa", hex: "#E8D3C8" },
     ],
-    customizable: false,
   },
 ];
 
 export const categories = [
   { id: "all", label: "Todos" },
   { id: "dijes", label: "Dijes" },
-  { id: "personalizable", label: "Personalizables" },
   { id: "marina", label: "Colección Marina" },
+  { id: "coleccion", label: "Colección" },
 ] as const;
 
 export type CategoryId = (typeof categories)[number]["id"];

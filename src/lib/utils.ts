@@ -1,6 +1,8 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+export const WHATSAPP_NUMBER = "573203039847";
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }

@@ -60,6 +60,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- cart must hydrate after mount to avoid SSR/localStorage mismatch
     setItems(loadCart());
     setIsLoaded(true);
   }, []);

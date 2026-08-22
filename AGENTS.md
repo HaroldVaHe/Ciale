@@ -12,11 +12,12 @@ The Next.js app lives at the repo root.
 
 ```
 src/
-├── app/          # layout.tsx, page.tsx (both "use client"), globals.css
+├── app/          # layout.tsx (server component: SEO metadata + JSON-LD), page.tsx,
+│                 # globals.css, sitemap.ts, robots.ts
 ├── components/   # 10 client components, all "use client"
 ├── context/      # CartContext.tsx (React Context + localStorage)
-├── data/         # products.ts (12 hardcoded products)
-└── lib/          # utils.ts (cn, formatCOP, generateWhatsAppLink)
+├── data/         # products.ts (12 hardcoded products), faqs.ts (FAQ content)
+└── lib/          # utils.ts (cn, formatCOP, generateWhatsAppLink, WHATSAPP_NUMBER)
 ```
 
 ## Commands
@@ -38,14 +39,15 @@ No test framework is configured. No typecheck script exists (use `npx tsc --noEm
 - **Colors**: Custom palette in `globals.css` (`cream`, `charcoal`, `coffee`, `nude`, `coral`, `gold`, `sage`, `border`).
 - **Utility**: `cn()` from `clsx` + `tailwind-merge` in `lib/utils.ts`.
 - **Currency**: Always use `formatCOP()` from utils. Locale is `es-CO`, currency COP.
-- **WhatsApp number**: Hardcoded as `573203039847` in `ProductCard.tsx` and `CartDrawer.tsx`.
+- **WhatsApp number**: Centralized as `WHATSAPP_NUMBER` in `lib/utils.ts` (`573203039847`). Never hardcode it in components.
 - **Cart key**: localStorage key is `ciale-cart`.
 
 ## Gotchas
 
-- **"coleccion" category gap**: Products with `category: "coleccion"` exist in data but the filter UI only shows `all`, `dijes`, `personalizable`, `marina`. These products are only findable via search.
+- **FAQ dual source of truth**: FAQ answers live in `src/data/faqs.ts` and feed both the visible `FaqSection` accordion and the `FAQPage` JSON-LD in `layout.tsx`. Edit only `faqs.ts` — both consume it.
 - **All client components**: Every component and even `page.tsx` is `"use client"`. Server components and API routes are not used despite App Router setup.
-- **No env vars yet**: The app currently uses no environment variables. WhatsApp number and brand info are hardcoded. Supabase env vars will be added in Fase 2.
+- **No env vars yet**: No environment variables are required. Optional `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` injects the GSC HTML-tag meta when set (DNS domain verification is the documented/recommended method). Supabase env vars will be added in Fase 2.
+- **Personalization postponed**: Initial-engraving feature is not implemented. Its UI was removed (`PersonalizaSection`, nav links, `personalizable` filter/category, `customizable` product fields). Dormant plumbing kept intentionally for the future feature: `CartItem.initial` (`CartContext.tsx`) and the `initial` param of `generateWhatsAppLink` (`lib/utils.ts`). Do not advertise personalization anywhere until the real flow exists.
 - **Locale**: All UI text is in Spanish (Colombian). `lang="es"`, OpenGraph `locale: "es_CO"`.
 - **Product images**: WebP optimized (~11-16 KB each) in `public/products/`. Banner in `public/Banner.webp` (~100 KB). All images use `next/image`.
 - **Recompression**: Run `node scripts/optimize-images.mjs` after adding new PNG images to `public/`.
@@ -92,7 +94,7 @@ No test framework is configured. No typecheck script exists (use `npx tsc --noEm
 - Estados de pedido
 
 ### Fase 7: Polish & Production
-- SEO (meta tags, structured data, sitemap)
+- ~~SEO (meta tags, structured data, sitemap)~~ ✅ hecho adelantado (JSON-LD JewelryStore/WebSite/ItemList/FAQPage, OG/Twitter cards, sitemap.xml, robots.txt, FAQ visible para AEO)
 - Analytics
 - Auditoría de performance
 - Error handling

@@ -10,14 +10,21 @@ import { useCart } from "@/context/CartContext";
 const navLinks = [
   { href: "#inicio", label: "Inicio" },
   { href: "#catalogo", label: "Catálogo" },
-  { href: "#personalizados", label: "Personalizados" },
   { href: "#sobre-nosotros", label: "Sobre Nosotros" },
+  { href: "#faq", label: "Preguntas Frecuentes" },
   { href: "#contacto", label: "Contacto" },
 ];
 
 export default function Header() {
   const { itemCount, openCart } = useCart();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const handleSearchClick = () => {
+    setMobileOpen(false);
+    const input = document.getElementById("catalogo-search");
+    input?.scrollIntoView({ behavior: "smooth", block: "center" });
+    window.setTimeout(() => input?.focus({ preventScroll: true }), 600);
+  };
 
   return (
     <header className="sticky top-0 z-40 bg-cream/90 backdrop-blur-md border-b border-border">
@@ -60,6 +67,7 @@ export default function Header() {
           {/* Actions */}
           <div className="flex items-center gap-3">
             <button
+              onClick={handleSearchClick}
               className="p-2 text-charcoal hover:text-coral transition-colors"
               aria-label="Buscar"
             >

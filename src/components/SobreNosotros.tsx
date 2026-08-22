@@ -22,7 +22,7 @@ const features = [
   {
     icon: Gift,
     title: "Empaque especial",
-    description: "Cada pieza llega en un emaque elegante, listo para regalar.",
+    description: "Cada pieza llega en un empaque elegante, listo para regalar.",
   },
 ];
 

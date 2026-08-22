@@ -68,8 +68,8 @@ export default function Footer() {
               {[
                 { href: "#inicio", label: "Inicio" },
                 { href: "#catalogo", label: "Catálogo" },
-                { href: "#personalizados", label: "Personalizados" },
                 { href: "#sobre-nosotros", label: "Sobre Nosotros" },
+                { href: "#faq", label: "Preguntas Frecuentes" },
               ].map((link) => (
                 <li key={link.href}>
                   <a

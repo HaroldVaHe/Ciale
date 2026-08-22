@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { ShoppingBag, MessageCircle, Eye, Plus } from "lucide-react";
+import { MessageCircle, Eye, Plus } from "lucide-react";
 import { useCart } from "@/context/CartContext";
-import { formatCOP } from "@/lib/utils";
+import { WHATSAPP_NUMBER, formatCOP } from "@/lib/utils";
 import type { Product } from "@/data/products";
 
 interface ProductCardProps {
@@ -31,7 +31,7 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
     setTimeout(() => setShowAdded(false), 1500);
   };
 
-  const waLink = `https://wa.me/573203039847?text=${encodeURIComponent(
+  const waLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
     `Hola CIALÉ! Me interesa el collar "${product.name}". ¿Está disponible?`
   )}`;
 

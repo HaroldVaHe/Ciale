@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { X, ShoppingBag, MessageCircle, Plus, Minus } from "lucide-react";
 import { useCart } from "@/context/CartContext";
-import { formatCOP } from "@/lib/utils";
+import { WHATSAPP_NUMBER, formatCOP } from "@/lib/utils";
 import type { Product } from "@/data/products";
 
 interface QuickViewModalProps {
@@ -50,7 +50,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
     }, 1200);
   };
 
-  const waLink = `https://wa.me/573203039847?text=${encodeURIComponent(
+  const waLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
     `Hola CIALÉ! Me interesa el collar "${product.name}". Cantidad: ${quantity}. ¿Está disponible?`
   )}`;
 

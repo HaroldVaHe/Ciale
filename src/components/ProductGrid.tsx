@@ -64,6 +64,7 @@ export default function ProductGrid() {
               className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-soft"
             />
             <input
+              id="catalogo-search"
               type="text"
               placeholder="Buscar collar..."
               value={search}
