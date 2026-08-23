@@ -10,7 +10,7 @@ export interface Product {
   name: string;
   description: string;
   price: number;
-  category: "dijes" | "marina" | "coleccion";
+  category: string;
   tags: string[];
   image: string;
   gradient: string;
@@ -219,4 +219,4 @@ export const categories = [
   { id: "coleccion", label: "Colección" },
 ] as const;
 
-export type CategoryId = (typeof categories)[number]["id"];
+export type CategoryId = string;

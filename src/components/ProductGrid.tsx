@@ -1,20 +1,35 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
 import { Search } from "lucide-react";
-import { products, categories, type CategoryId } from "@/data/products";
+import {
+  getCatalogo,
+  getLocalCatalogo,
+  type Catalogo,
+} from "@/lib/catalogo";
+import type { CategoryId, Product } from "@/data/products";
 import ProductCard from "./ProductCard";
 import QuickViewModal from "./QuickViewModal";
-import type { Product } from "@/data/products";
 
 export default function ProductGrid() {
+  const [catalogo, setCatalogo] = useState<Catalogo>(getLocalCatalogo);
   const [activeCategory, setActiveCategory] = useState<CategoryId>("all");
   const [search, setSearch] = useState("");
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
 
+  useEffect(() => {
+    let active = true;
+    getCatalogo().then((data) => {
+      if (active) setCatalogo(data);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+
   const filtered = useMemo(() => {
-    return products.filter((p) => {
+    return catalogo.products.filter((p) => {
       const matchCategory =
         activeCategory === "all" || p.category === activeCategory;
       const matchSearch =
@@ -23,7 +38,7 @@ export default function ProductGrid() {
         p.tags.some((t) => t.toLowerCase().includes(search.toLowerCase()));
       return matchCategory && matchSearch;
     });
-  }, [activeCategory, search]);
+  }, [catalogo.products, activeCategory, search]);
 
   return (
     <>
@@ -42,7 +57,7 @@ export default function ProductGrid() {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-10">
           {/* Category tabs */}
           <div className="flex flex-wrap items-center justify-center gap-2">
-            {categories.map((cat) => (
+            {catalogo.categories.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}

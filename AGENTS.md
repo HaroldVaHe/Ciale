@@ -24,6 +24,8 @@ src/
 ├── hooks/        # useDialog.ts (dialog a11y: Escape, focus trap, scroll lock)
 └── lib/
     ├── utils.ts     # cn, formatCOP, generateWhatsAppLink, WHATSAPP_NUMBER
+    ├── catalogo.ts  # getCatalogo(): lee productos/categorías de Supabase con
+    │                # fallback a data/products.ts; nunca lanza errores
     └── supabase/    # Fase 2: types.ts (Database), client.ts (browser),
                      # server.ts (cookies), isSupabaseConfigured()
 ```
@@ -54,7 +56,8 @@ No test framework is configured. No typecheck script exists (use `npx tsc --noEm
 
 - **FAQ dual source of truth**: FAQ answers live in `src/data/faqs.ts` and feed both the visible `FaqSection` accordion and the `FAQPage` JSON-LD in `layout.tsx`. Edit only `faqs.ts` — both consume it.
 - **All client components**: Every component and even `page.tsx` is `"use client"`. Server components and API routes are not used despite App Router setup.
-- **Env vars**: None required to run. When `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` are set they activate Supabase (Fase 2); without them `isSupabaseConfigured()` returns false and the Supabase clients throw if called — the storefront keeps working with hardcoded data. Optional `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` injects the GSC HTML-tag meta when set (DNS domain verification is the documented/recommended method). See `.env.example`.
+- **Env vars**: None required to run. When `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` are set they activate Supabase (Fase 2): `ProductGrid` carga el catálogo vía `getCatalogo()` (`lib/catalogo.ts`) desde la BD; sin ellas (o ante error/BD vacía) cae a los datos hardcodeados de `data/products.ts`. La tienda funciona en ambos escenarios. Optional `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` injects the GSC HTML-tag meta when set (DNS domain verification is the documented/recommended method). See `.env.example`.
+- **Catalog dual source**: `data/products.ts` is the SSR/fallback snapshot (also feeds the static ItemList JSON-LD in layout.tsx). The live grid may come from Supabase once env vars are set. Keep the seed in sync when products change until Fase 4 admin CRUD replaces manual edits.
 - **Personalization postponed**: Initial-engraving feature is not implemented. Its UI was removed (`PersonalizaSection`, nav links, `personalizable` filter/category, `customizable` product fields). Dormant plumbing kept intentionally for the future feature: `CartItem.initial` (`CartContext.tsx`) and the `initial` param of `generateWhatsAppLink` (`lib/utils.ts`). Do not advertise personalization anywhere until the real flow exists.
 - **Locale**: All UI text is in Spanish (Colombian). `lang="es"`, OpenGraph `locale: "es_CO"`.
 - **Product images**: WebP optimized (~11-16 KB each) in `public/products/`. Banner in `public/Banner.webp` (~100 KB). All images use `next/image`.
@@ -79,9 +82,9 @@ No test framework is configured. No typecheck script exists (use `npx tsc --noEm
 - [x] Seed inicial → `supabase/seed.sql` (3 categorías + los 12 productos, re-ejecutable)
 - [x] Clientes tipados → `src/lib/supabase/` (browser + server con cookies, `isSupabaseConfigured()`)
 - [x] Variables de entorno documentadas → `.env.example`
-- [ ] Crear proyecto en Supabase y ejecutar schema.sql + seed.sql (manual, requiere cuenta)
-- [ ] Setear env vars en `.env.local` y Vercel
-- [ ] Migrar el catálogo a lectura desde Supabase (con fallback a datos hardcodeados)
+- [x] Crear proyecto en Supabase y ejecutar schema.sql + seed.sql (hecho, verificado en Table Editor)
+- [ ] Setear env vars en `.env.local` y Vercel (`.env.local` local ya creado con placeholders)
+- [x] Migrar el catálogo a lectura desde Supabase (con fallback a datos hardcodeados) → `lib/catalogo.ts`
 
 ### Fase 3: Admin Authentication
 - Supabase Auth
