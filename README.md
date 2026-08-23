@@ -61,6 +61,9 @@ Ciale/
 ├── eslint.config.mjs
 ├── scripts/
 │   └── optimize-images.mjs   # Recompresses PNGs to WebP via sharp
+├── supabase/
+│   ├── schema.sql            # Tables + RLS (run in Supabase SQL Editor)
+│   └── seed.sql              # 3 categories + 12 products (re-runnable)
 ├── public/                   # Static assets: banner, logos, product images (WebP)
 └── src/
     ├── app/
@@ -85,8 +88,11 @@ Ciale/
     ├── data/
     │   ├── products.ts      # 12 hardcoded product definitions
     │   └── faqs.ts          # FAQ content (visible section + FAQPage schema)
+    ├── hooks/
+    │   └── useDialog.ts     # Dialog a11y hook (Escape, focus trap, scroll lock)
     └── lib/
-        └── utils.ts         # cn(), formatCOP(), generateWhatsAppLink(), WHATSAPP_NUMBER
+        ├── utils.ts         # cn(), formatCOP(), generateWhatsAppLink(), WHATSAPP_NUMBER
+        └── supabase/        # Typed clients + Database types (Fase 2)
 ```
 
 ### Getting Started
@@ -188,6 +194,18 @@ Search for `573203039847` in `ProductCard.tsx` and `CartDrawer.tsx`. Replace wit
 
 Edit the `@theme inline` block in `src/app/globals.css`.
 
+### Supabase Setup (Fase 2)
+
+The database layer is ready; connecting it requires your Supabase account:
+
+1. Create a project at [supabase.com](https://supabase.com)
+2. Open its **SQL Editor** and run `supabase/schema.sql`, then `supabase/seed.sql` (both are re-runnable)
+3. Copy credentials from *Project Settings → API*: **Project URL** and the `anon` `public` key
+4. Locally: copy `.env.example` to `.env.local` and fill in `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+5. In Vercel → Settings → Environment Variables, add the same two values
+
+Until those env vars exist, `isSupabaseConfigured()` returns `false` and the storefront keeps serving hardcoded data — nothing breaks either way.
+
 ### Deployment (Vercel)
 
 1. Push to GitHub
@@ -231,7 +249,7 @@ DNS verification covers the whole domain (including subdomains) and doesn't depe
 | Phase | Status | Description |
 |---|---|---|
 | **Fase 1** | ✅ Done | Frontend storefront — products, cart, WhatsApp checkout, WebP images |
-| **Fase 2** | Pending | Supabase Foundation — project setup, schema design, connection |
+| **Fase 2** | Partial | Supabase Foundation — schema, seed & typed clients ready; project creation pending (manual) |
 | **Fase 3** | Pending | Admin Authentication — Supabase Auth, login page, protected routes |
 | **Fase 4** | Pending | Product CRUD — admin dashboard, create/edit/delete products |
 | **Fase 5** | Pending | Categories & Organization — category management, tags, ordering |
@@ -291,6 +309,9 @@ Ciale/
 ├── eslint.config.mjs
 ├── scripts/
 │   └── optimize-images.mjs   # Recomprime PNGs a WebP con sharp
+├── supabase/
+│   ├── schema.sql            # Tablas + RLS (ejecutar en el SQL Editor de Supabase)
+│   └── seed.sql              # 3 categorías + 12 productos (re-ejecutable)
 ├── public/                   # Assets estáticos: banner, logos e imágenes de productos (WebP)
 └── src/
     ├── app/
@@ -315,8 +336,11 @@ Ciale/
     ├── data/
     │   ├── products.ts      # 12 definiciones de productos hardcodeados
     │   └── faqs.ts          # Contenido FAQ (sección visible + schema FAQPage)
+    ├── hooks/
+    │   └── useDialog.ts     # Hook de a11y para diálogos (Escape, focus trap, scroll lock)
     └── lib/
-        └── utils.ts         # cn(), formatCOP(), generateWhatsAppLink(), WHATSAPP_NUMBER
+        ├── utils.ts         # cn(), formatCOP(), generateWhatsAppLink(), WHATSAPP_NUMBER
+        └── supabase/        # Clientes tipados + tipos Database (Fase 2)
 ```
 
 ### Primeros Pasos
@@ -418,6 +442,18 @@ Actualiza la constante `WHATSAPP_NUMBER` en `src/lib/utils.ts`. Usa formato inte
 
 Edita el bloque `@theme inline` en `src/app/globals.css`.
 
+### Configuración de Supabase (Fase 2)
+
+La capa de base de datos está lista; conectarla requiere tu cuenta de Supabase:
+
+1. Crea un proyecto en [supabase.com](https://supabase.com)
+2. Abre su **SQL Editor** y ejecuta `supabase/schema.sql`, luego `supabase/seed.sql` (ambos son re-ejecutables)
+3. Copia las credenciales desde *Project Settings → API*: **Project URL** y la clave `anon` `public`
+4. Localmente: copia `.env.example` a `.env.local` y completa `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+5. En Vercel → Settings → Environment Variables, agrega los mismos dos valores
+
+Hasta que existan esas variables, `isSupabaseConfigured()` retorna `false` y la tienda sigue sirviendo datos hardcodeados — nada se rompe en ningún escenario.
+
 ### Despliegue (Vercel)
 
 1. Subir a GitHub
@@ -461,7 +497,7 @@ La verificación por DNS cubre todo el dominio (incluyendo subdominios) y no dep
 | Fase | Estado | Descripción |
 |---|---|---|
 | **Fase 1** | ✅ Listo | Frontend storefront — productos, carrito, checkout WhatsApp, imágenes WebP |
-| **Fase 2** | Pendiente | Supabase Foundation — configuración del proyecto, diseño de schema, conexión |
+| **Fase 2** | Parcial | Supabase Foundation — schema, seed y clientes tipados listos; falta crear el proyecto (manual) |
 | **Fase 3** | Pendiente | Autenticación Admin — Supabase Auth, página de login, rutas protegidas |
 | **Fase 4** | Pendiente | CRUD de Productos — dashboard admin, crear/editar/eliminar productos |
 | **Fase 5** | Pendiente | Categorías y Organización — gestión de categorías, tags, ordenamiento |

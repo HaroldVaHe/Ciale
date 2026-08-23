@@ -11,13 +11,21 @@ Checkout is via **WhatsApp** (no payment gateway).
 The Next.js app lives at the repo root.
 
 ```
+supabase/
+├── schema.sql    # Tablas + RLS (ejecutar en el SQL Editor del proyecto)
+└── seed.sql      # 3 categorías + los 12 productos actuales (re-ejecutable)
+
 src/
 ├── app/          # layout.tsx (server component: SEO metadata + JSON-LD), page.tsx,
 │                 # globals.css, sitemap.ts, robots.ts
 ├── components/   # 10 client components, all "use client"
 ├── context/      # CartContext.tsx (React Context + localStorage)
 ├── data/         # products.ts (12 hardcoded products), faqs.ts (FAQ content)
-└── lib/          # utils.ts (cn, formatCOP, generateWhatsAppLink, WHATSAPP_NUMBER)
+├── hooks/        # useDialog.ts (dialog a11y: Escape, focus trap, scroll lock)
+└── lib/
+    ├── utils.ts     # cn, formatCOP, generateWhatsAppLink, WHATSAPP_NUMBER
+    └── supabase/    # Fase 2: types.ts (Database), client.ts (browser),
+                     # server.ts (cookies), isSupabaseConfigured()
 ```
 
 ## Commands
@@ -46,7 +54,7 @@ No test framework is configured. No typecheck script exists (use `npx tsc --noEm
 
 - **FAQ dual source of truth**: FAQ answers live in `src/data/faqs.ts` and feed both the visible `FaqSection` accordion and the `FAQPage` JSON-LD in `layout.tsx`. Edit only `faqs.ts` — both consume it.
 - **All client components**: Every component and even `page.tsx` is `"use client"`. Server components and API routes are not used despite App Router setup.
-- **No env vars yet**: No environment variables are required. Optional `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` injects the GSC HTML-tag meta when set (DNS domain verification is the documented/recommended method). Supabase env vars will be added in Fase 2.
+- **Env vars**: None required to run. When `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` are set they activate Supabase (Fase 2); without them `isSupabaseConfigured()` returns false and the Supabase clients throw if called — the storefront keeps working with hardcoded data. Optional `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` injects the GSC HTML-tag meta when set (DNS domain verification is the documented/recommended method). See `.env.example`.
 - **Personalization postponed**: Initial-engraving feature is not implemented. Its UI was removed (`PersonalizaSection`, nav links, `personalizable` filter/category, `customizable` product fields). Dormant plumbing kept intentionally for the future feature: `CartItem.initial` (`CartContext.tsx`) and the `initial` param of `generateWhatsAppLink` (`lib/utils.ts`). Do not advertise personalization anywhere until the real flow exists.
 - **Locale**: All UI text is in Spanish (Colombian). `lang="es"`, OpenGraph `locale: "es_CO"`.
 - **Product images**: WebP optimized (~11-16 KB each) in `public/products/`. Banner in `public/Banner.webp` (~100 KB). All images use `next/image`.
@@ -66,11 +74,14 @@ No test framework is configured. No typecheck script exists (use `npx tsc --noEm
 - Dark mode forzado a light
 - Desplegado en Vercel
 
-### Fase 2: Supabase Foundation
-- Crear proyecto en Supabase
-- Diseñar schema de BD (productos, categorías, pedidos)
-- Variables de entorno (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`)
-- Configurar conexión
+### Fase 2: Supabase Foundation 🟡
+- [x] Diseñar schema de BD → `supabase/schema.sql` (categories, products, orders, order_items + RLS)
+- [x] Seed inicial → `supabase/seed.sql` (3 categorías + los 12 productos, re-ejecutable)
+- [x] Clientes tipados → `src/lib/supabase/` (browser + server con cookies, `isSupabaseConfigured()`)
+- [x] Variables de entorno documentadas → `.env.example`
+- [ ] Crear proyecto en Supabase y ejecutar schema.sql + seed.sql (manual, requiere cuenta)
+- [ ] Setear env vars en `.env.local` y Vercel
+- [ ] Migrar el catálogo a lectura desde Supabase (con fallback a datos hardcodeados)
 
 ### Fase 3: Admin Authentication
 - Supabase Auth
