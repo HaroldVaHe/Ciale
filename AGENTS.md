@@ -28,7 +28,8 @@ src/
     ├── catalogo.ts  # getCatalogo(): lee productos/categorías de Supabase con
     │                # fallback a data/products.ts; nunca lanza errores
     └── supabase/    # types.ts (Database), client.ts (browser),
-                     # server.ts (cookies), admin.ts (ADMIN_EMAIL fail-closed)
+                     # server.ts (cookies), admin.ts (ADMIN_EMAIL fail-closed),
+                     # guard.ts (requireAdmin para Server Actions)
 
 supabase/
 ├── schema.sql    # Tablas + RLS (ejecutar una vez)
@@ -95,29 +96,31 @@ No test framework is configured. No typecheck script exists (use `npx tsc --noEm
 - [x] Setear env vars en `.env.local` y activar el catálogo desde BD (verificado en local; producción/Vercel usa fallback hardcodeado hasta agregar las mismas vars ahí y redeployar)
 - [x] Migrar el catálogo a lectura desde Supabase (con fallback a datos hardcodeados) → `lib/catalogo.ts`
 
-### Fase 3: Admin Authentication 🟡
+### Fase 3: Admin Authentication ✅
 - [x] Clientes de auth listos (server con cookies + browser, `lib/supabase/`)
 - [x] Middleware → `src/middleware.ts`: protege `/admin*`; sin sesión redirige a `/admin/login?next=…`; refresca cookies de sesión en cada request
-- [x] Restricción a admin único → `lib/supabase/admin.ts` lee la env var `ADMIN_EMAIL` (fail-closed); usuarios autenticados con otro correo son expulsados a login (`?error=no-admin`)
+- [x] Restricción a admin único → `lib/supabase/admin.ts` lee la env var `ADMIN_EMAIL` (fail-closed si no está definida); usuarios autenticados con otro correo son expulsados a login (`?error=no-admin`)
 - [x] Login page `/admin/login` (server wrapper + `LoginForm` client; errores en español; noindex)
 - [x] Dashboard placeholder `/admin` (server component con `getUser`, saludo + tarjetas Fases 4-6 + logout)
-- [ ] Crear el usuario en Supabase Auth → Authentication → Users → Add user (el correo configurado en la env var `ADMIN_EMAIL`, contraseña fuerte, Auto Confirm User ✅) — manual
+- [x] Crear el usuario en Supabase Auth → Authentication → Users → Add user (el correo configurado en la env var `ADMIN_EMAIL`, contraseña fuerte, Auto Confirm User ✅)
 - [ ] Deshabilitar signups públicos → Authentication → Providers → Email → desactivar "Allow new users to sign up" — manual
-- [ ] Verificar flujo end-to-end en local (login → /admin → logout)
+- [x] Verificar flujo end-to-end en local (login → /admin → logout)
 
-### Fase 4: Product CRUD 🟡
+### Fase 4: Product CRUD ✅
 - [x] Server Actions CRUD → `app/admin/products/actions.ts` (crear/editar/eliminar/toggle; re-verifica admin en cada mutación)
 - [x] Lista `/admin/products`: thumbnail, categoría, precio, estado Activo/Oculto, toggle, editar, eliminar con confirmación
 - [x] Formulario crear/editar → `components/admin/ProductForm.tsx` (`useActionState`, validaciones en español, editor visual de variantes con color picker — sin JSON manual; gradientes solo como presets literales para que Tailwind los genere)
 - [x] Upload de imágenes → bucket `product-images`; conversión automática a WebP con `sharp` (EXIF rotate, máx 1200 px, q80; en `dependencies` para producción); `bodySizeLimit` 4 MB en next.config
 - [x] Migración `middleware.ts` → `proxy.ts` (convención Next 16)
-- [ ] Ejecutar `supabase/storage.sql` en el SQL Editor (bucket + políticas) — manual
-- [ ] Verificar flujo end-to-end (crear producto de prueba → visible en tienda → ocultar → eliminar)
+- [x] Ejecutar `supabase/storage.sql` en el SQL Editor (bucket `product-images` verificado vía API pública)
+- [x] Verificar flujo end-to-end (crear producto de prueba → visible en tienda → ocultar → eliminar; verificado por el usuario)
 
-### Fase 5: Categories & Organization
-- Gestión de categorías
-- Ordenamiento y filtros en admin
-- Tags
+### Fase 5: Categories & Organization 🟡
+- [x] Server Actions de categorías → `app/admin/categories/actions.ts` (crear con id autogenerado del nombre, renombrar inline, eliminar con protección por productos asociados, reordenar)
+- [x] Página `/admin/categories` → lista con contador de productos, flechas de orden, banner de errores vía `?error=`
+- [x] Reordenamiento por flechas compartido → `components/admin/ReorderButtons.tsx` (categorías y productos; intercambia `sort_order` con el vecino)
+- [x] Tags como chips con sugerencias en `ProductForm` (datalist propio: Enter/coma agrega, Backspace borra, clic en sugeridos; servidor sigue validando)
+- [ ] Verificar flujo end-to-end (crear categoría → moverla en el orden → renombrarla → intentar borrar con productos → crear producto con tags sugeridos) — manual
 
 ### Fase 6: Orders & Checkout
 - Almacenamiento de pedidos en Supabase

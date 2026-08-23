@@ -3,10 +3,14 @@ import ProductForm from "@/components/admin/ProductForm";
 
 export default async function NewProductPage() {
   const supabase = await createSupabaseServerClient();
-  const { data: categories } = await supabase
-    .from("categories")
-    .select("id, label")
-    .order("sort_order");
+  const [{ data: categories }, { data: tagRows }] = await Promise.all([
+    supabase.from("categories").select("id, label").order("sort_order"),
+    supabase.from("products").select("tags"),
+  ]);
+
+  const allTags = [
+    ...new Set((tagRows ?? []).flatMap((row) => row.tags ?? [])),
+  ].sort();
 
   return (
     <section className="max-w-3xl mx-auto">
@@ -22,7 +26,7 @@ export default async function NewProductPage() {
         </p>
       </div>
 
-      <ProductForm mode="create" categories={categories ?? []} />
+      <ProductForm mode="create" categories={categories ?? []} allTags={allTags} />
     </section>
   );
 }

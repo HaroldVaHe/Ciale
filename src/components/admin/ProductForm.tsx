@@ -26,6 +26,7 @@ export interface ProductFormValues {
 interface ProductFormProps {
   mode: "create" | "edit";
   categories: Array<{ id: string; label: string }>;
+  allTags?: string[];
   product?: ProductFormValues;
 }
 
@@ -89,6 +90,7 @@ function buildUniqueSlug(name: string, existing: Set<string>): string {
 export default function ProductForm({
   mode,
   categories,
+  allTags = [],
   product,
 }: ProductFormProps) {
   const [state, formAction, pending] = useActionState<ProductFormState, FormData>(
@@ -119,6 +121,45 @@ export default function ProductForm({
   );
 
   const [variantKeyCounter, setVariantKeyCounter] = useState(variants.length);
+
+  const [tags, setTags] = useState<string[]>(product?.tags ?? []);
+  const [tagDraft, setTagDraft] = useState("");
+
+  const tagSuggestions = allTags
+    .filter((tag) => !tags.includes(tag))
+    .filter(
+      (tag) =>
+        tagDraft.trim() === "" ||
+        tag.includes(tagDraft.trim().toLowerCase())
+    )
+    .slice(0, 8);
+
+  function addTag(raw: string) {
+    const tag = raw
+      .trim()
+      .toLowerCase()
+      .replace(/,/g, "");
+    if (tag === "") return;
+    setTags((current) => (current.includes(tag) ? current : [...current, tag]));
+    setTagDraft("");
+  }
+
+  function removeTag(tag: string) {
+    setTags((current) => current.filter((item) => item !== tag));
+  }
+
+  function handleTagKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key === "Enter" || event.key === ",") {
+      event.preventDefault();
+      addTag(tagDraft);
+    } else if (
+      event.key === "Backspace" &&
+      tagDraft === "" &&
+      tags.length > 0
+    ) {
+      setTags((current) => current.slice(0, -1));
+    }
+  }
 
   function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -286,16 +327,54 @@ export default function ProductForm({
         </div>
 
         <div>
-          <label htmlFor="pf-tags" className="block text-xs tracking-widest uppercase font-medium text-coffee mb-2">
-            Tags (separados por coma)
-          </label>
-          <input
-            id="pf-tags"
-            name="tags"
-            defaultValue={product?.tags.join(", ")}
-            placeholder="dije, marino, coral"
-            className={inputClass}
-          />
+          <span className="block text-xs tracking-widest uppercase font-medium text-coffee mb-2">
+            Tags
+          </span>
+          <input type="hidden" name="tags" value={tags.join(", ")} />
+          <div className="flex flex-wrap items-center gap-2 px-3 py-2.5 rounded-lg border border-border bg-white focus-within:border-coral focus-within:ring-2 focus-within:ring-coral/20 transition-all duration-300">
+            {tags.map((tag) => (
+              <span
+                key={tag}
+                className="inline-flex items-center gap-1.5 pl-3 pr-1.5 py-1 rounded-full bg-nude/50 text-coffee text-xs font-medium"
+              >
+                {tag}
+                <button
+                  type="button"
+                  onClick={() => removeTag(tag)}
+                  aria-label={`Quitar tag ${tag}`}
+                  className="p-0.5 rounded-full hover:bg-coffee hover:text-white transition-colors duration-200"
+                >
+                  <X size={11} />
+                </button>
+              </span>
+            ))}
+            <input
+              value={tagDraft}
+              onChange={(event) => setTagDraft(event.target.value)}
+              onKeyDown={handleTagKeyDown}
+              onBlur={() => addTag(tagDraft)}
+              placeholder={tags.length === 0 ? "Escribe y presiona Enter…" : ""}
+              aria-label="Agregar tag"
+              className="flex-1 min-w-32 bg-transparent py-1 text-sm text-charcoal placeholder:text-charcoal/30 focus:outline-none"
+            />
+          </div>
+          {tagSuggestions.length > 0 && (
+            <div className="flex flex-wrap items-center gap-1.5 mt-2">
+              <span className="text-[11px] text-charcoal/40 mr-1">
+                Sugeridos:
+              </span>
+              {tagSuggestions.map((tag) => (
+                <button
+                  key={tag}
+                  type="button"
+                  onClick={() => addTag(tag)}
+                  className="px-2.5 py-0.5 rounded-full border border-border bg-white text-charcoal/70 text-xs hover:border-coral hover:text-coral transition-colors duration-200"
+                >
+                  + {tag}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </fieldset>
 

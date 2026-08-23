@@ -3,8 +3,10 @@ import { Pencil } from "lucide-react";
 import { formatCOP } from "@/lib/utils";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { Database } from "@/lib/supabase/types";
+import { moveProduct } from "@/app/admin/products/actions";
 import DeleteProductButton from "@/components/admin/DeleteProductButton";
 import ToggleActiveButton from "@/components/admin/ToggleActiveButton";
+import ReorderButtons from "@/components/admin/ReorderButtons";
 
 type ProductRow = Database["public"]["Tables"]["products"]["Row"];
 
@@ -55,7 +57,7 @@ export default async function AdminProductsPage() {
             </tr>
           </thead>
           <tbody>
-            {(products ?? []).map((product: ProductRow) => (
+            {(products ?? []).map((product: ProductRow, index: number) => (
               <tr
                 key={product.id}
                 className={`border-b border-border/60 last:border-0 ${
@@ -82,8 +84,18 @@ export default async function AdminProductsPage() {
                 <td className="px-4 py-3 hidden sm:table-cell text-charcoal/70">
                   {formatCOP(product.price)}
                 </td>
-                <td className="px-4 py-3 hidden lg:table-cell text-charcoal/70">
-                  {product.sort_order}
+                <td className="px-4 py-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-charcoal/40 tabular-nums w-4">
+                      {product.sort_order}
+                    </span>
+                    <ReorderButtons
+                      id={product.id}
+                      canUp={index > 0}
+                      canDown={index < (products?.length ?? 1) - 1}
+                      action={moveProduct}
+                    />
+                  </div>
                 </td>
                 <td className="px-4 py-3">
                   <span

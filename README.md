@@ -250,9 +250,9 @@ DNS verification covers the whole domain (including subdomains) and doesn't depe
 |---|---|---|
 | **Fase 1** | ✅ Done | Frontend storefront — products, cart, WhatsApp checkout, WebP images |
 | **Fase 2** | Done | Supabase Foundation — catalog reads from Supabase with local fallback (active locally; Vercel pending env vars) |
-| **Fase 3** | Partial | Admin Authentication — login, middleware & dashboard ready; pending admin user creation in Supabase (manual) |
-| **Fase 4** | Partial | Product CRUD — code complete; pending storage.sql setup and end-to-end verification (manual) |
-| **Fase 5** | Pending | Categories & Organization — category management, tags, ordering |
+| **Fase 3** | Done | Admin Authentication — single-admin login behind proxy; keep public signups disabled in Supabase |
+| **Fase 4** | Done | Product CRUD — full admin catalog management with WebP image pipeline |
+| **Fase 5** | Partial | Categories & Organization — code complete; pending end-to-end verification (manual) |
 | **Fase 6** | Pending | Orders & Checkout — order storage, admin view, status tracking |
 | **Fase 7** | Partial | Polish & Production — analytics, performance, error handling, testing *(SEO & AEO already done)* |
 
@@ -498,9 +498,9 @@ La verificación por DNS cubre todo el dominio (incluyendo subdominios) y no dep
 |---|---|---|
 | **Fase 1** | ✅ Listo | Frontend storefront — productos, carrito, checkout WhatsApp, imágenes WebP |
 | **Fase 2** | Done | Supabase Foundation — catálogo lee de Supabase con fallback local (activado en local; Vercel pendiente de env vars) |
-| **Fase 3** | Parcial | Autenticación Admin — login, middleware y dashboard listos; falta crear el usuario en Supabase (manual) |
-| **Fase 4** | Parcial | CRUD de Productos — listo en código; falta ejecutar storage.sql y verificar flujo (manual) |
-| **Fase 5** | Pendiente | Categorías y Organización — gestión de categorías, tags, ordenamiento |
+| **Fase 3** | Hecho | Autenticación Admin — login de admin único tras proxy; mantener signups públicos deshabilitados en Supabase |
+| **Fase 4** | Hecho | CRUD de Productos — gestión completa desde /admin con pipeline de imágenes WebP |
+| **Fase 5** | Parcial | Categorías y Organización — listo en código; falta verificación end-to-end (manual) |
 | **Fase 6** | Pendiente | Pedidos y Checkout — almacenamiento de pedidos, vista admin, estados |
 | **Fase 7** | Parcial | Pulido y Producción — analytics, performance, error handling, testing *(SEO y AEO ya implementados)* |
 

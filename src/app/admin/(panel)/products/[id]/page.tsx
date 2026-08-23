@@ -12,14 +12,20 @@ export default async function EditProductPage({
   const { id } = await params;
   const supabase = await createSupabaseServerClient();
 
-  const [{ data: product }, { data: categories }] = await Promise.all([
-    supabase.from("products").select("*").eq("id", id).single(),
-    supabase.from("categories").select("id, label").order("sort_order"),
-  ]);
+  const [{ data: product }, { data: categories }, { data: tagRows }] =
+    await Promise.all([
+      supabase.from("products").select("*").eq("id", id).single(),
+      supabase.from("categories").select("id, label").order("sort_order"),
+      supabase.from("products").select("tags"),
+    ]);
 
   if (!product) {
     notFound();
   }
+
+  const allTags = [
+    ...new Set((tagRows ?? []).flatMap((row) => row.tags ?? [])),
+  ].sort();
 
   const values: ProductFormValues = {
     id: product.id,
@@ -48,7 +54,12 @@ export default async function EditProductPage({
         </h1>
       </div>
 
-      <ProductForm mode="edit" categories={categories ?? []} product={values} />
+      <ProductForm
+        mode="edit"
+        categories={categories ?? []}
+        allTags={allTags}
+        product={values}
+      />
     </section>
   );
 }

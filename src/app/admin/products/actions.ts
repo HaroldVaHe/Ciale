@@ -3,8 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import sharp from "sharp";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { isAdminEmail } from "@/lib/supabase/admin";
+import { requireAdmin } from "@/lib/supabase/guard";
 import type { Database } from "@/lib/supabase/types";
 
 type ProductsTable = Database["public"]["Tables"]["products"];
@@ -16,17 +15,6 @@ export interface ProductFormState {
 
 const BUCKET = "product-images";
 const ALLOWED_MIME = ["image/jpeg", "image/png", "image/webp", "image/avif"];
-
-async function requireAdmin() {
-  const supabase = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user || !isAdminEmail(user.email)) {
-    throw new Error("No autorizado");
-  }
-  return supabase;
-}
 
 function text(formData: FormData, key: string): string {
   const value = formData.get(key);
@@ -301,6 +289,42 @@ export async function toggleProductActive(formData: FormData): Promise<void> {
   if (!id) return;
 
   await supabase.from("products").update({ is_active: !active }).eq("id", id);
+  revalidatePath("/admin/products");
+  revalidatePath("/");
+}
+
+export async function moveProduct(formData: FormData): Promise<void> {
+  const supabase = await requireAdmin();
+  const id = text(formData, "id");
+  const direction = text(formData, "direction");
+  if (!id || (direction !== "up" && direction !== "down")) return;
+
+  const { data } = await supabase
+    .from("products")
+    .select("id")
+    .order("sort_order");
+  const list = data ?? [];
+  const index = list.findIndex((row) => row.id === id);
+  const targetIndex = direction === "up" ? index - 1 : index + 1;
+  if (index === -1 || targetIndex < 0 || targetIndex >= list.length) return;
+
+  const swapped = [...list];
+  [swapped[index], swapped[targetIndex]] = [
+    swapped[targetIndex],
+    swapped[index],
+  ];
+
+  await Promise.all([
+    supabase
+      .from("products")
+      .update({ sort_order: index + 1 })
+      .eq("id", swapped[index].id),
+    supabase
+      .from("products")
+      .update({ sort_order: targetIndex + 1 })
+      .eq("id", swapped[targetIndex].id),
+  ]);
+
   revalidatePath("/admin/products");
   revalidatePath("/");
 }
