@@ -108,7 +108,7 @@ No test framework is configured. No typecheck script exists (use `npx tsc --noEm
 ### Fase 4: Product CRUD 🟡
 - [x] Server Actions CRUD → `app/admin/products/actions.ts` (crear/editar/eliminar/toggle; re-verifica admin en cada mutación)
 - [x] Lista `/admin/products`: thumbnail, categoría, precio, estado Activo/Oculto, toggle, editar, eliminar con confirmación
-- [x] Formulario crear/editar → `components/admin/ProductForm.tsx` (`useActionState`, validaciones en español, variants como JSON validado)
+- [x] Formulario crear/editar → `components/admin/ProductForm.tsx` (`useActionState`, validaciones en español, editor visual de variantes con color picker — sin JSON manual; gradientes solo como presets literales para que Tailwind los genere)
 - [x] Upload de imágenes → bucket `product-images`; conversión automática a WebP con `sharp` (EXIF rotate, máx 1200 px, q80; en `dependencies` para producción); `bodySizeLimit` 4 MB en next.config
 - [x] Migración `middleware.ts` → `proxy.ts` (convención Next 16)
 - [ ] Ejecutar `supabase/storage.sql` en el SQL Editor (bucket + políticas) — manual

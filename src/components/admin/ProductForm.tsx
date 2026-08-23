@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useActionState, useState } from "react";
+import { Plus, X } from "lucide-react";
 import {
   createProduct,
   updateProduct,
@@ -28,8 +29,62 @@ interface ProductFormProps {
   product?: ProductFormValues;
 }
 
-const GRADIENT_PLACEHOLDER =
-  "from-orange-200 via-rose-100 to-amber-50";
+interface VariantRow {
+  key: number;
+  name: string;
+  hex: string;
+}
+
+/**
+ * Gradientes predefinidos. Deben quedar como literales en este archivo
+ * para que el escáner de Tailwind genere las clases correspondientes.
+ */
+const GRADIENT_PRESETS: Array<{ label: string; value: string }> = [
+  { label: "Coral", value: "from-orange-200 via-rose-100 to-amber-50" },
+  { label: "Rosa", value: "from-pink-200 via-rose-100 to-pink-50" },
+  { label: "Marino", value: "from-blue-200 via-cyan-100 to-teal-50" },
+  { label: "Nácar", value: "from-amber-50 via-rose-50 to-blue-50" },
+  { label: "Ohana", value: "from-rose-200 via-orange-100 to-yellow-50" },
+  { label: "Arena", value: "from-stone-200 via-amber-50 to-stone-100" },
+  { label: "Aurora", value: "from-violet-200 via-pink-100 to-amber-50" },
+  { label: "Salvia", value: "from-green-100 via-amber-50 to-rose-50" },
+  { label: "Cora", value: "from-rose-200 via-red-100 to-pink-50" },
+  { label: "Perla", value: "from-gray-100 via-amber-50 to-gray-50" },
+  { label: "Miel", value: "from-amber-200 via-orange-100 to-yellow-50" },
+  { label: "Nude", value: "from-stone-100 via-stone-50 to-white" },
+];
+
+const SWATCH_COLORS = [
+  "#E79C88",
+  "#D4AF37",
+  "#C0C0C0",
+  "#B87333",
+  "#A3B18A",
+  "#F2B5D4",
+  "#B8D4E3",
+  "#2D2926",
+];
+
+function slugify(value: string): string {
+  return value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function buildUniqueSlug(name: string, existing: Set<string>): string {
+  const base = slugify(name) || "variante";
+  let slug = base;
+  let counter = 2;
+  while (existing.has(slug)) {
+    slug = `${base}-${counter}`;
+    counter += 1;
+  }
+  existing.add(slug);
+  return slug;
+}
 
 export default function ProductForm({
   mode,
@@ -45,14 +100,71 @@ export default function ProductForm({
     product?.image ?? null
   );
 
+  const initialGradient =
+    product?.gradient ?? GRADIENT_PRESETS[0].value;
+  const [gradient, setGradient] = useState(initialGradient);
+
+  const gradientOptions = GRADIENT_PRESETS.some(
+    (preset) => preset.value === initialGradient
+  )
+    ? GRADIENT_PRESETS
+    : [...GRADIENT_PRESETS, { label: "Actual", value: initialGradient }];
+
+  const [variants, setVariants] = useState<VariantRow[]>(() =>
+    (product?.variants ?? []).map((variant, index) => ({
+      key: index,
+      name: variant.name ?? "",
+      hex: variant.hex ?? SWATCH_COLORS[index % SWATCH_COLORS.length],
+    }))
+  );
+
+  const [variantKeyCounter, setVariantKeyCounter] = useState(variants.length);
+
   function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     setImagePreview(file ? URL.createObjectURL(file) : product?.image ?? null);
   }
 
+  function addVariant() {
+    setVariants((rows) => [
+      ...rows,
+      {
+        key: variantKeyCounter,
+        name: "",
+        hex: SWATCH_COLORS[variantKeyCounter % SWATCH_COLORS.length],
+      },
+    ]);
+    setVariantKeyCounter((count) => count + 1);
+  }
+
+  function updateVariant(key: number, patch: Partial<VariantRow>) {
+    setVariants((rows) =>
+      rows.map((row) => (row.key === key ? { ...row, ...patch } : row))
+    );
+  }
+
+  function removeVariant(key: number) {
+    setVariants((rows) => rows.filter((row) => row.key !== key));
+  }
+
+  function serializeVariants(): string {
+    const seen = new Set<string>();
+    const cleaned = variants
+      .filter((row) => row.name.trim() !== "")
+      .map((row) => ({
+        id: buildUniqueSlug(row.name.trim(), seen),
+        name: row.name.trim(),
+        color: row.name.trim(),
+        hex: row.hex,
+      }));
+    return JSON.stringify(cleaned);
+  }
+
   return (
     <form action={formAction} className="space-y-8">
       {mode === "edit" && <input type="hidden" name="id" value={product?.id} />}
+      <input type="hidden" name="gradient" value={gradient} />
+      <input type="hidden" name="variants" value={serializeVariants()} />
 
       {/* Identidad */}
       <fieldset className="bg-white rounded-2xl border border-border p-6 space-y-5">
@@ -92,7 +204,7 @@ export default function ProductForm({
             <p className="text-[11px] text-charcoal/40 mt-1.5">
               {mode === "edit"
                 ? "Inmutable: los carritos existentes lo referencian."
-                : "Se usa en el carrito y pedidos; no puede cambiarse después."}
+                : "Se usa internamente; no puede cambiarse después."}
             </p>
           </div>
         </div>
@@ -188,23 +300,32 @@ export default function ProductForm({
       </fieldset>
 
       {/* Apariencia e imagen */}
-      <fieldset className="bg-white rounded-2xl border border-border p-6 space-y-5">
+      <fieldset className="bg-white rounded-2xl border border-border p-6 space-y-6">
         <legend className="px-2 text-[11px] tracking-[0.25em] uppercase font-medium text-coral">
           Apariencia
         </legend>
 
         <div>
-          <label htmlFor="pf-gradient" className="block text-xs tracking-widest uppercase font-medium text-coffee mb-2">
-            Gradiente Tailwind *
-          </label>
-          <input
-            id="pf-gradient"
-            name="gradient"
-            required
-            defaultValue={product?.gradient}
-            placeholder={GRADIENT_PLACEHOLDER}
-            className={`${inputClass} font-mono text-sm`}
-          />
+          <span className="block text-xs tracking-widest uppercase font-medium text-coffee mb-3">
+            Color de fondo *
+          </span>
+          <div className="grid grid-cols-4 sm:grid-cols-7 gap-2">
+            {gradientOptions.map((preset) => (
+              <button
+                key={preset.value}
+                type="button"
+                onClick={() => setGradient(preset.value)}
+                title={preset.label}
+                aria-pressed={gradient === preset.value}
+                aria-label={`Fondo ${preset.label}`}
+                className={`h-12 rounded-xl bg-gradient-to-br ${preset.value} border transition-all duration-200 ${
+                  gradient === preset.value
+                    ? "ring-2 ring-coffee ring-offset-2 border-transparent"
+                    : "border-border hover:border-coral"
+                }`}
+              />
+            ))}
+          </div>
         </div>
 
         <div>
@@ -220,40 +341,73 @@ export default function ProductForm({
                 className="w-20 h-20 rounded-xl object-cover border border-border"
               />
             )}
-            <input
-              type="file"
-              name="image"
-              accept="image/jpeg,image/png,image/webp,image/avif"
-              onChange={handleImageChange}
-              required={mode === "create"}
-              className="text-sm text-charcoal/70 file:mr-3 file:px-4 file:py-2 file:rounded-full file:border-0 file:bg-coffee file:text-white file:text-xs file:tracking-widest file:uppercase hover:file:bg-coral file:cursor-pointer"
-            />
+            <div>
+              <input
+                type="file"
+                name="image"
+                accept="image/jpeg,image/png,image/webp,image/avif"
+                onChange={handleImageChange}
+                required={mode === "create"}
+                className="text-sm text-charcoal/70 file:mr-3 file:px-4 file:py-2 file:rounded-full file:border-0 file:bg-coffee file:text-white file:text-xs file:tracking-widest file:uppercase hover:file:bg-coral file:cursor-pointer"
+              />
+              <p className="text-[11px] text-charcoal/40 mt-2">
+                JPG, PNG, WebP o AVIF — se convierte a WebP automáticamente (máx. 1200 px).
+              </p>
+            </div>
           </div>
-          <p className="text-[11px] text-charcoal/40 mt-2">
-            JPG, PNG, WebP o AVIF — se convierte a WebP automáticamente (máx. 1200 px).
-          </p>
         </div>
       </fieldset>
 
       {/* Variantes */}
-      <fieldset className="bg-white rounded-2xl border border-border p-6 space-y-2">
+      <fieldset className="bg-white rounded-2xl border border-border p-6 space-y-4">
         <legend className="px-2 text-[11px] tracking-[0.25em] uppercase font-medium text-coral">
-          Variantes (JSON)
+          Colores disponibles
         </legend>
-        <textarea
-          name="variants"
-          rows={7}
-          defaultValue={
-            product
-              ? JSON.stringify(product.variants, null, 2)
-              : DEFAULT_VARIANTS
-          }
-          spellCheck={false}
-          className={`${inputClass} font-mono text-sm`}
-        />
-        <p className="text-[11px] text-charcoal/40">
-          Arreglo de objetos con las claves id, name, color y hex.
+        <p className="text-sm text-charcoal/60 -mt-2">
+          Opcional. Si el producto no tiene variaciones de color, deja la lista vacía.
         </p>
+
+        {variants.length > 0 && (
+          <ul className="space-y-3">
+            {variants.map((row) => (
+              <li key={row.key} className="flex items-center gap-3">
+                <input
+                  type="color"
+                  value={row.hex}
+                  onChange={(event) =>
+                    updateVariant(row.key, { hex: event.target.value })
+                  }
+                  aria-label={`Color de la variante ${row.name || "sin nombre"}`}
+                  className="w-10 h-10 rounded-lg border border-border cursor-pointer bg-white p-1 shrink-0"
+                />
+                <input
+                  value={row.name}
+                  onChange={(event) =>
+                    updateVariant(row.key, { name: event.target.value })
+                  }
+                  placeholder="Nombre del color, ej. Dorado"
+                  className={`${inputClass} flex-1`}
+                />
+                <button
+                  type="button"
+                  onClick={() => removeVariant(row.key)}
+                  aria-label={`Quitar variante ${row.name || "sin nombre"}`}
+                  className="p-2.5 rounded-lg border border-border text-charcoal hover:border-red-400 hover:text-red-600 transition-colors duration-300 shrink-0"
+                >
+                  <X size={14} />
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <button
+          type="button"
+          onClick={addVariant}
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-white text-charcoal text-[11px] tracking-[0.2em] uppercase font-medium hover:border-coral hover:text-coral transition-colors duration-300"
+        >
+          <Plus size={14} /> Agregar color
+        </button>
       </fieldset>
 
       {/* Publicación */}
@@ -300,8 +454,3 @@ export default function ProductForm({
 
 const inputClass =
   "w-full px-4 py-3 rounded-lg border border-border bg-white text-charcoal placeholder:text-charcoal/30 focus:outline-none focus:border-coral focus:ring-2 focus:ring-coral/20 transition-all duration-300";
-
-const DEFAULT_VARIANTS = `[
-  { "id": "variante-1", "name": "Nombre", "color": "Color", "hex": "#D4AF37" },
-  { "id": "variante-2", "name": "Nombre", "color": "Color", "hex": "#C0C0C0" }
-]`;
