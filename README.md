@@ -249,8 +249,8 @@ DNS verification covers the whole domain (including subdomains) and doesn't depe
 | Phase | Status | Description |
 |---|---|---|
 | **Fase 1** | ✅ Done | Frontend storefront — products, cart, WhatsApp checkout, WebP images |
-| **Fase 2** | Partial | Supabase Foundation — catalog reads from Supabase with local fallback; activation pending (env vars in .env.local / Vercel) |
-| **Fase 3** | Pending | Admin Authentication — Supabase Auth, login page, protected routes |
+| **Fase 2** | Done | Supabase Foundation — catalog reads from Supabase with local fallback (active locally; Vercel pending env vars) |
+| **Fase 3** | Partial | Admin Authentication — login, middleware & dashboard ready; pending admin user creation in Supabase (manual) |
 | **Fase 4** | Pending | Product CRUD — admin dashboard, create/edit/delete products |
 | **Fase 5** | Pending | Categories & Organization — category management, tags, ordering |
 | **Fase 6** | Pending | Orders & Checkout — order storage, admin view, status tracking |
@@ -497,8 +497,8 @@ La verificación por DNS cubre todo el dominio (incluyendo subdominios) y no dep
 | Fase | Estado | Descripción |
 |---|---|---|
 | **Fase 1** | ✅ Listo | Frontend storefront — productos, carrito, checkout WhatsApp, imágenes WebP |
-| **Fase 2** | Parcial | Supabase Foundation — el catálogo lee de Supabase con fallback local; falta activar con env vars (.env.local / Vercel) |
-| **Fase 3** | Pendiente | Autenticación Admin — Supabase Auth, página de login, rutas protegidas |
+| **Fase 2** | Done | Supabase Foundation — catálogo lee de Supabase con fallback local (activado en local; Vercel pendiente de env vars) |
+| **Fase 3** | Parcial | Autenticación Admin — login, middleware y dashboard listos; falta crear el usuario en Supabase (manual) |
 | **Fase 4** | Pendiente | CRUD de Productos — dashboard admin, crear/editar/eliminar productos |
 | **Fase 5** | Pendiente | Categorías y Organización — gestión de categorías, tags, ordenamiento |
 | **Fase 6** | Pendiente | Pedidos y Checkout — almacenamiento de pedidos, vista admin, estados |

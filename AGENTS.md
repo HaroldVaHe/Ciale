@@ -58,6 +58,7 @@ No test framework is configured. No typecheck script exists (use `npx tsc --noEm
 - **All client components**: Every component and even `page.tsx` is `"use client"`. Server components and API routes are not used despite App Router setup.
 - **Env vars**: None required to run. When `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` are set they activate Supabase (Fase 2): `ProductGrid` carga el catálogo vía `getCatalogo()` (`lib/catalogo.ts`) desde la BD; sin ellas (o ante error/BD vacía) cae a los datos hardcodeados de `data/products.ts`. La tienda funciona en ambos escenarios. Optional `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` injects the GSC HTML-tag meta when set (DNS domain verification is the documented/recommended method). See `.env.example`.
 - **Catalog dual source**: `data/products.ts` is the SSR/fallback snapshot (also feeds the static ItemList JSON-LD in layout.tsx). The live grid may come from Supabase once env vars are set. Keep the seed in sync when products change until Fase 4 admin CRUD replaces manual edits.
+- **Single admin**: `/admin*` access is gated twice — middleware (`src/middleware.ts`) checks session + `isAdminEmail()`, and the RLS write policies require `authenticated`. The allowed address comes from the `ADMIN_EMAIL` env var (`lib/supabase/admin.ts`, fail-closed si no está definida) — never hardcode the admin email in the repo. Public signups should stay disabled in Supabase Auth settings.
 - **Personalization postponed**: Initial-engraving feature is not implemented. Its UI was removed (`PersonalizaSection`, nav links, `personalizable` filter/category, `customizable` product fields). Dormant plumbing kept intentionally for the future feature: `CartItem.initial` (`CartContext.tsx`) and the `initial` param of `generateWhatsAppLink` (`lib/utils.ts`). Do not advertise personalization anywhere until the real flow exists.
 - **Locale**: All UI text is in Spanish (Colombian). `lang="es"`, OpenGraph `locale: "es_CO"`.
 - **Product images**: WebP optimized (~11-16 KB each) in `public/products/`. Banner in `public/Banner.webp` (~100 KB). All images use `next/image`.
@@ -77,20 +78,24 @@ No test framework is configured. No typecheck script exists (use `npx tsc --noEm
 - Dark mode forzado a light
 - Desplegado en Vercel
 
-### Fase 2: Supabase Foundation 🟡
+### Fase 2: Supabase Foundation ✅
 - [x] Diseñar schema de BD → `supabase/schema.sql` (categories, products, orders, order_items + RLS)
 - [x] Seed inicial → `supabase/seed.sql` (3 categorías + los 12 productos, re-ejecutable)
 - [x] Clientes tipados → `src/lib/supabase/` (browser + server con cookies, `isSupabaseConfigured()`)
 - [x] Variables de entorno documentadas → `.env.example`
 - [x] Crear proyecto en Supabase y ejecutar schema.sql + seed.sql (hecho, verificado en Table Editor)
-- [ ] Setear env vars en `.env.local` y Vercel (`.env.local` local ya creado con placeholders)
+- [x] Setear env vars en `.env.local` y activar el catálogo desde BD (verificado en local; producción/Vercel usa fallback hardcodeado hasta agregar las mismas vars ahí y redeployar)
 - [x] Migrar el catálogo a lectura desde Supabase (con fallback a datos hardcodeados) → `lib/catalogo.ts`
 
-### Fase 3: Admin Authentication
-- Supabase Auth
-- Página de login para admin (`/admin/login`)
-- Rutas protegidas / middleware
-- Gestión de sesión
+### Fase 3: Admin Authentication 🟡
+- [x] Clientes de auth listos (server con cookies + browser, `lib/supabase/`)
+- [x] Middleware → `src/middleware.ts`: protege `/admin*`; sin sesión redirige a `/admin/login?next=…`; refresca cookies de sesión en cada request
+- [x] Restricción a admin único → `lib/supabase/admin.ts` lee la env var `ADMIN_EMAIL` (fail-closed); usuarios autenticados con otro correo son expulsados a login (`?error=no-admin`)
+- [x] Login page `/admin/login` (server wrapper + `LoginForm` client; errores en español; noindex)
+- [x] Dashboard placeholder `/admin` (server component con `getUser`, saludo + tarjetas Fases 4-6 + logout)
+- [ ] Crear el usuario en Supabase Auth → Authentication → Users → Add user (el correo configurado en la env var `ADMIN_EMAIL`, contraseña fuerte, Auto Confirm User ✅) — manual
+- [ ] Deshabilitar signups públicos → Authentication → Providers → Email → desactivar "Allow new users to sign up" — manual
+- [ ] Verificar flujo end-to-end en local (login → /admin → logout)
 
 ### Fase 4: Product CRUD
 - Dashboard de admin (`/admin`)
