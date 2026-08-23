@@ -18,7 +18,8 @@ supabase/
 src/
 ├── app/          # layout.tsx (server component: SEO metadata + JSON-LD), page.tsx,
 │                 # globals.css, sitemap.ts, robots.ts
-├── components/   # 10 client components, all "use client"
+│                 # /admin: login + (panel)/products CRUD (Server Actions en actions.ts)
+├── components/   # client components: storefront raíz + components/admin/*
 ├── context/      # CartContext.tsx (React Context + localStorage)
 ├── data/         # products.ts (12 hardcoded products), faqs.ts (FAQ content)
 ├── hooks/        # useDialog.ts (dialog a11y: Escape, focus trap, scroll lock)
@@ -26,8 +27,13 @@ src/
     ├── utils.ts     # cn, formatCOP, generateWhatsAppLink, WHATSAPP_NUMBER
     ├── catalogo.ts  # getCatalogo(): lee productos/categorías de Supabase con
     │                # fallback a data/products.ts; nunca lanza errores
-    └── supabase/    # Fase 2: types.ts (Database), client.ts (browser),
-                     # server.ts (cookies), isSupabaseConfigured()
+    └── supabase/    # types.ts (Database), client.ts (browser),
+                     # server.ts (cookies), admin.ts (ADMIN_EMAIL fail-closed)
+
+supabase/
+├── schema.sql    # Tablas + RLS (ejecutar una vez)
+├── seed.sql      # 3 categorías + los 12 productos (re-ejecutable)
+└── storage.sql   # Bucket product-images + políticas (Fase 4, ejecutar una vez)
 ```
 
 ## Commands
@@ -55,9 +61,11 @@ No test framework is configured. No typecheck script exists (use `npx tsc --noEm
 ## Gotchas
 
 - **FAQ dual source of truth**: FAQ answers live in `src/data/faqs.ts` and feed both the visible `FaqSection` accordion and the `FAQPage` JSON-LD in `layout.tsx`. Edit only `faqs.ts` — both consume it.
-- **All client components**: Every component and even `page.tsx` is `"use client"`. Server components and API routes are not used despite App Router setup.
+- **Storefront client-only, admin on the server**: The storefront (`page.tsx` + components) remains `"use client"`. `/admin` is server-rendered and mutates via **Server Actions** (`app/admin/products/actions.ts`) — every action re-verifies session + `isAdminEmail()` (middleware alone does not guard action POSTs).
+- **Product ids are immutable slugs**: `products.id` is the PK referenced by carts in localStorage; the edit form disables it. Renaming an id orphans cart items.
+- **Storage**: images live in bucket `product-images` at `products/{slug}.{ext}` (upsert on replace; deleted with the product). Public read, authenticated write — set up by `supabase/storage.sql`. `next/image` allows `*.supabase.co/public/**` via `remotePatterns`.
 - **Env vars**: None required to run. When `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` are set they activate Supabase (Fase 2): `ProductGrid` carga el catálogo vía `getCatalogo()` (`lib/catalogo.ts`) desde la BD; sin ellas (o ante error/BD vacía) cae a los datos hardcodeados de `data/products.ts`. La tienda funciona en ambos escenarios. Optional `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` injects the GSC HTML-tag meta when set (DNS domain verification is the documented/recommended method). See `.env.example`.
-- **Catalog dual source**: `data/products.ts` is the SSR/fallback snapshot (also feeds the static ItemList JSON-LD in layout.tsx). The live grid may come from Supabase once env vars are set. Keep the seed in sync when products change until Fase 4 admin CRUD replaces manual edits.
+- **Catalog dual source**: `data/products.ts` is the SSR/fallback snapshot (also feeds the static ItemList JSON-LD in layout.tsx). The live grid may come from Supabase once env vars are set. Manage products via `/admin/products` (Fase 4) instead of editing the seed; keep the seed only as bootstrap data.
 - **Single admin**: `/admin*` access is gated twice — middleware (`src/middleware.ts`) checks session + `isAdminEmail()`, and the RLS write policies require `authenticated`. The allowed address comes from the `ADMIN_EMAIL` env var (`lib/supabase/admin.ts`, fail-closed si no está definida) — never hardcode the admin email in the repo. Public signups should stay disabled in Supabase Auth settings.
 - **Personalization postponed**: Initial-engraving feature is not implemented. Its UI was removed (`PersonalizaSection`, nav links, `personalizable` filter/category, `customizable` product fields). Dormant plumbing kept intentionally for the future feature: `CartItem.initial` (`CartContext.tsx`) and the `initial` param of `generateWhatsAppLink` (`lib/utils.ts`). Do not advertise personalization anywhere until the real flow exists.
 - **Locale**: All UI text is in Spanish (Colombian). `lang="es"`, OpenGraph `locale: "es_CO"`.
@@ -97,11 +105,14 @@ No test framework is configured. No typecheck script exists (use `npx tsc --noEm
 - [ ] Deshabilitar signups públicos → Authentication → Providers → Email → desactivar "Allow new users to sign up" — manual
 - [ ] Verificar flujo end-to-end en local (login → /admin → logout)
 
-### Fase 4: Product CRUD
-- Dashboard de admin (`/admin`)
-- Lista de productos
-- Crear / editar / eliminar productos
-- Subir imágenes a Supabase Storage
+### Fase 4: Product CRUD 🟡
+- [x] Server Actions CRUD → `app/admin/products/actions.ts` (crear/editar/eliminar/toggle; re-verifica admin en cada mutación)
+- [x] Lista `/admin/products`: thumbnail, categoría, precio, estado Activo/Oculto, toggle, editar, eliminar con confirmación
+- [x] Formulario crear/editar → `components/admin/ProductForm.tsx` (`useActionState`, validaciones en español, variants como JSON validado)
+- [x] Upload de imágenes → bucket `product-images` (`products/{slug}.{ext}`, upsert al reemplazar, borrado con el producto); `bodySizeLimit` 4 MB en next.config
+- [x] Migración `middleware.ts` → `proxy.ts` (convención Next 16)
+- [ ] Ejecutar `supabase/storage.sql` en el SQL Editor (bucket + políticas) — manual
+- [ ] Verificar flujo end-to-end (crear producto de prueba → visible en tienda → ocultar → eliminar)
 
 ### Fase 5: Categories & Organization
 - Gestión de categorías
