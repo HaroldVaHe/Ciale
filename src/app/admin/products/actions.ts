@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import sharp from "sharp";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isAdminEmail } from "@/lib/supabase/admin";
 import type { Database } from "@/lib/supabase/types";
@@ -14,12 +15,7 @@ export interface ProductFormState {
 }
 
 const BUCKET = "product-images";
-const MIME_EXT: Record<string, string> = {
-  "image/jpeg": "jpg",
-  "image/png": "png",
-  "image/webp": "webp",
-  "image/avif": "avif",
-};
+const ALLOWED_MIME = ["image/jpeg", "image/png", "image/webp", "image/avif"];
 
 async function requireAdmin() {
   const supabase = await createSupabaseServerClient();
@@ -129,19 +125,41 @@ function storagePathFromUrl(url: string): string | null {
   return index === -1 ? null : url.slice(index + marker.length);
 }
 
+/**
+ * Normaliza cualquier imagen aceptada (JPG/PNG/WebP/AVIF) a WebP:
+ * - respeta la orientación EXIF (fotos de celular)
+ * - limita a 1200 px por el lado mayor sin agrandar
+ * - calidad 80 (~10-40 KB por producto)
+ */
+async function convertToWebp(file: File): Promise<Buffer> {
+  const input = Buffer.from(await file.arrayBuffer());
+  return sharp(input)
+    .rotate()
+    .resize({ width: 1200, height: 1200, fit: "inside", withoutEnlargement: true })
+    .webp({ quality: 80 })
+    .toBuffer();
+}
+
 async function uploadImage(
   supabase: Awaited<ReturnType<typeof requireAdmin>>,
   productId: string,
   file: File
 ): Promise<{ ok: true; url: string } | { ok: false; error: string }> {
-  const ext = MIME_EXT[file.type];
-  if (!ext) {
+  if (!ALLOWED_MIME.includes(file.type)) {
     return { ok: false, error: "Formato de imagen no permitido (usa JPG, PNG, WebP o AVIF)." };
   }
-  const path = `products/${productId}.${ext}`;
-  const { error } = await supabase.storage.from(BUCKET).upload(path, file, {
+
+  let webp: Buffer;
+  try {
+    webp = await convertToWebp(file);
+  } catch {
+    return { ok: false, error: "La imagen parece corrupta o ilegible. Prueba con otro archivo." };
+  }
+
+  const path = `products/${productId}.webp`;
+  const { error } = await supabase.storage.from(BUCKET).upload(path, webp, {
     upsert: true,
-    contentType: file.type,
+    contentType: "image/webp",
   });
   if (error) {
     return { ok: false, error: `No se pudo subir la imagen: ${error.message}` };

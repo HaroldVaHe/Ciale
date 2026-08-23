@@ -229,6 +229,9 @@ export default function ProductForm({
               className="text-sm text-charcoal/70 file:mr-3 file:px-4 file:py-2 file:rounded-full file:border-0 file:bg-coffee file:text-white file:text-xs file:tracking-widest file:uppercase hover:file:bg-coral file:cursor-pointer"
             />
           </div>
+          <p className="text-[11px] text-charcoal/40 mt-2">
+            JPG, PNG, WebP o AVIF — se convierte a WebP automáticamente (máx. 1200 px).
+          </p>
         </div>
       </fieldset>
 
