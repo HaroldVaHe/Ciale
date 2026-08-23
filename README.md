@@ -37,7 +37,8 @@ The site is designed as a **single-page application** with smooth anchor-link na
 - **Product filtering** by category (Todos, Dijes, Colección Marina, Colección) with real-time text search
 - **Quick View modal** — click any product card to see details, pick variants, choose quantity, and add to cart
 - **Shopping cart drawer** — slide-in panel with item management (add/remove/quantity), subtotal calculation, and WhatsApp checkout
-- **WhatsApp integration** — cart checkout generates a pre-filled WhatsApp message with item list, variants, and total in COP
+- **WhatsApp integration** — cart checkout generates a pre-filled WhatsApp message with item list, variants, total in COP, and optional delivery address
+- **Accessible modals** — Escape to close, keyboard focus trapping, focus restoration on close, and body scroll lock
 - **Responsive design** — mobile-first grid: 1 col → 2 col → 3 col → 4 col
 - **Announcement bar** — sticky promotional banner at the top
 - **Sticky header** — logo, navigation, search icon, cart icon with badge counter
@@ -266,7 +267,8 @@ El sitio funciona como una **aplicación de una sola página** con navegación s
 - **Filtrado de productos** por categoría (Todos, Dijes, Colección Marina, Colección) con búsqueda en tiempo real
 - **Modal de Vista Rápida** — haz clic en cualquier tarjeta para ver detalles, elegir variantes, cantidad y agregar al carrito
 - **Drawer del carrito** — panel lateral con gestión de artículos (agregar/quitar/cantidad), cálculo de subtotales y checkout por WhatsApp
-- **Integración con WhatsApp** — el checkout genera un mensaje prellenado con lista de productos, variantes y total en COP
+- **Integración con WhatsApp** — el checkout genera un mensaje prellenado con lista de productos, variantes, total en COP y dirección de entrega opcional
+- **Modales accesibles** — cierre con Escape, trampa de foco por teclado, restauración de foco al cerrar y bloqueo de scroll
 - **Diseño responsivo** — grid mobile-first: 1 col → 2 col → 3 col → 4 col
 - **Barra de anuncios** — banner promocional fijo en la parte superior
 - **Header fijo** — logo, navegación, ícono de búsqueda, ícono de carrito con contador

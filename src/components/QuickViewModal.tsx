@@ -6,6 +6,7 @@ import Image from "next/image";
 import { X, ShoppingBag, MessageCircle, Plus, Minus } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { WHATSAPP_NUMBER, formatCOP } from "@/lib/utils";
+import { useDialog } from "@/hooks/useDialog";
 import type { Product } from "@/data/products";
 
 interface QuickViewModalProps {
@@ -20,6 +21,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
   const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
   const [isZooming, setIsZooming] = useState(false);
   const imgRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useDialog(Boolean(product), onClose);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!imgRef.current) return;
@@ -62,15 +64,21 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
+        aria-hidden="true"
         className="fixed inset-0 z-50 bg-charcoal/50 backdrop-blur-sm"
       />
 
       {/* Modal */}
       <motion.div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={`Detalles de ${product.name}`}
+        tabIndex={-1}
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        className="fixed inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-50 bg-white rounded-xl shadow-2xl overflow-hidden md:max-w-3xl md:w-full md:max-h-[90vh] overflow-y-auto"
+        className="fixed inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-50 bg-white rounded-xl shadow-2xl overflow-hidden md:max-w-3xl md:w-full md:max-h-[90vh] overflow-y-auto outline-none"
       >
         <button
           onClick={onClose}

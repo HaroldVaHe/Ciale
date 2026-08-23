@@ -1,13 +1,17 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Minus, Plus, Trash2, MessageCircle, ShoppingBag } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { WHATSAPP_NUMBER, formatCOP, generateWhatsAppLink } from "@/lib/utils";
+import { useDialog } from "@/hooks/useDialog";
 
 export default function CartDrawer() {
   const { items, isOpen, closeCart, updateQuantity, removeItem, total } = useCart();
+  const [address, setAddress] = useState("");
+  const dialogRef = useDialog(isOpen, closeCart);
 
   const waLink = generateWhatsAppLink(
     WHATSAPP_NUMBER,
@@ -17,7 +21,8 @@ export default function CartDrawer() {
       variant: item.variantName,
       initial: item.initial,
     })),
-    total
+    total,
+    address.trim() || undefined
   );
 
   return (
@@ -30,16 +35,22 @@ export default function CartDrawer() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={closeCart}
+            aria-hidden="true"
             className="fixed inset-0 z-50 bg-charcoal/40 backdrop-blur-sm"
           />
 
           {/* Drawer */}
           <motion.div
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Carrito de compras"
+            tabIndex={-1}
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            className="fixed top-0 right-0 h-full w-full max-w-md z-50 bg-cream shadow-2xl flex flex-col"
+            className="fixed top-0 right-0 h-full w-full max-w-md z-50 bg-cream shadow-2xl flex flex-col outline-none"
           >
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-5 border-b border-border">
@@ -175,9 +186,23 @@ export default function CartDrawer() {
                     {formatCOP(total)}
                   </span>
                 </div>
-                <p className="text-[10px] text-gray-soft mb-4 text-center">
+                <p className="text-[10px] text-gray-soft mb-3 text-center">
                   El envío se calcula según tu ubicación
                 </p>
+                <label
+                  htmlFor="direccion-entrega"
+                  className="text-[10px] tracking-widest uppercase text-gray-soft font-medium block mb-1.5"
+                >
+                  Dirección de entrega (opcional)
+                </label>
+                <input
+                  id="direccion-entrega"
+                  type="text"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  placeholder="Calle 123 #45-67, Barrio, Ciudad"
+                  className="w-full px-4 py-2.5 bg-cream border border-border rounded-md text-sm text-charcoal placeholder:text-gray-light focus:outline-none focus:border-coral focus:ring-1 focus:ring-coral/20 transition-all mb-4"
+                />
                 <a
                   href={waLink}
                   target="_blank"
