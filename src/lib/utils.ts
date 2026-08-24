@@ -15,16 +15,22 @@ export function formatCOP(value: number): string {
   }).format(value);
 }
 
-export function generateWhatsAppLink(
-  phone: string,
+export interface WhatsAppOrderDetails {
   items: {
     name: string;
     quantity: number;
     variant?: string;
     initial?: string;
-  }[],
-  total: number,
-  address?: string
+  }[];
+  total: number;
+  address?: string;
+  orderRef?: string;
+  notes?: string;
+}
+
+export function generateWhatsAppLink(
+  phone: string,
+  { items, total, address, orderRef, notes }: WhatsAppOrderDetails
 ): string {
   const productList = items
     .map((item) => {
@@ -36,9 +42,11 @@ export function generateWhatsAppLink(
     .join("\n");
 
   const message = encodeURIComponent(
-    `Hola CIALÉ! Me gustaría realizar el siguiente pedido:\n\n${productList}\n\nTotal: ${formatCOP(total)}${
+    `Hola CIALÉ! Me gustaría realizar el siguiente pedido:${
+      orderRef ? `\n\nPedido: ${orderRef}` : ""
+    }\n\n${productList}\n\nTotal: ${formatCOP(total)}${
       address ? `\nDirección de entrega: ${address}` : ""
-    }\n\n¡Gracias!`
+    }${notes ? `\nDetalles adicionales: ${notes}` : ""}\n\n¡Gracias!`
   );
 
   return `https://wa.me/${phone}?text=${message}`;

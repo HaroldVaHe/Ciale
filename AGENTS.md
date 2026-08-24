@@ -21,7 +21,8 @@ src/
 │                 # /admin: login + (panel)/products CRUD (Server Actions en actions.ts)
 ├── components/   # client components: storefront raíz + components/admin/*
 ├── context/      # CartContext.tsx (React Context + localStorage)
-├── data/         # products.ts (12 hardcoded products), faqs.ts (FAQ content)
+├── data/         # products.ts (12 hardcoded products), faqs.ts (FAQ content),
+│                 # colombia.ts (departamentos + ciudades del checkout)
 ├── hooks/        # useDialog.ts (dialog a11y: Escape, focus trap, scroll lock)
 └── lib/
     ├── utils.ts     # cn, formatCOP, generateWhatsAppLink, WHATSAPP_NUMBER
@@ -130,6 +131,8 @@ No test framework is configured. No typecheck script exists (use `npx tsc --noEm
 - [x] Guardado de pedidos → `lib/orders.ts` (fire-and-forget al hacer clic en "Finalizar Pedido vía WhatsApp": orders + order_items con snapshot de precio; nunca bloquea ni rompe el checkout)
 - [x] Vista `/admin/orders` → tarjetas por pedido con artículos, total, contadores por estado y acciones
 - [x] Estados de pedido → nuevo / confirmado / enviado / entregado / cancelado (`OrderStatusControls` con transiciones rápidas + cancelar + eliminar; Server Actions re-verifican admin)
+- [x] Referencia del pedido en WhatsApp → `orderRef()` (`CL-XXXXXXXX`, 8 chars del UUID) va en el mensaje; el checkout crea el pedido ANTES de abrir WhatsApp (botón async con fallback si el popup se bloquea)
+- [x] Formulario de checkout obligatorio → dirección, departamento y ciudad (selects dependientes desde `data/colombia.ts`); detalles adicionales opcional → `orders.notes`
 - [ ] Verificar flujo end-to-end (compra de prueba → pedido en BD → avanzar estado → cancelar → eliminar) — manual
 
 ### Fase 7: Polish & Production

@@ -123,7 +123,7 @@ export default async function AdminOrdersPage() {
                       {STATUS_LABEL[order.status]}
                     </span>
                     <span className="text-xs text-gray-soft">
-                      #{order.id.slice(0, 8)} ·{" "}
+                      CL-{order.id.slice(0, 8).toUpperCase()} ·{" "}
                       {dateFormatter.format(new Date(order.created_at))}
                     </span>
                   </div>

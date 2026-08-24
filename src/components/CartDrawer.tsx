@@ -1,30 +1,70 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Minus, Plus, Trash2, MessageCircle, ShoppingBag } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { WHATSAPP_NUMBER, formatCOP, generateWhatsAppLink } from "@/lib/utils";
+import { saveOrder, orderRef } from "@/lib/orders";
+import { DEPARTAMENTOS } from "@/data/colombia";
 import { useDialog } from "@/hooks/useDialog";
-import { saveOrder } from "@/lib/orders";
 
 export default function CartDrawer() {
   const { items, isOpen, closeCart, updateQuantity, removeItem, total } = useCart();
   const [address, setAddress] = useState("");
+  const [department, setDepartment] = useState("");
+  const [city, setCity] = useState("");
+  const [notes, setNotes] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [fallbackLink, setFallbackLink] = useState<string | null>(null);
   const dialogRef = useDialog(isOpen, closeCart);
 
-  const waLink = generateWhatsAppLink(
-    WHATSAPP_NUMBER,
-    items.map((item) => ({
-      name: item.name,
-      quantity: item.quantity,
-      variant: item.variantName,
-      initial: item.initial,
-    })),
-    total,
-    address.trim() || undefined
+  const cities = useMemo(
+    () => DEPARTAMENTOS.find((d) => d.nombre === department)?.ciudades ?? [],
+    [department]
   );
+
+  function buildWaLink(orderId?: string | null): string {
+    return generateWhatsAppLink(WHATSAPP_NUMBER, {
+      items: items.map((item) => ({
+        name: item.name,
+        quantity: item.quantity,
+        variant: item.variantName || undefined,
+        initial: item.initial,
+      })),
+      total,
+      address: `${address}, ${city}, ${department}`,
+      orderRef: orderId ? orderRef(orderId) : undefined,
+      notes: notes.trim() || undefined,
+    });
+  }
+
+  async function handleCheckout(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = e.currentTarget;
+    if (!form.reportValidity()) return;
+
+    setSaving(true);
+    setFallbackLink(null);
+    try {
+      const orderId = await saveOrder(items, total, {
+        address,
+        city,
+        department,
+        notes: notes.trim() || undefined,
+      });
+      const link = buildWaLink(orderId);
+      const win = window.open(link, "_blank", "noopener,noreferrer");
+      if (!win) setFallbackLink(link);
+    } catch {
+      // Nunca bloqueamos el checkout por un error del guardado.
+      const win = window.open(buildWaLink(), "_blank", "noopener,noreferrer");
+      if (!win) setFallbackLink(buildWaLink());
+    } finally {
+      setSaving(false);
+    }
+  }
 
   return (
     <AnimatePresence>
@@ -139,6 +179,7 @@ export default function CartDrawer() {
                           <div className="flex items-center justify-between mt-2">
                             <div className="flex items-center gap-2">
                               <button
+                                type="button"
                                 onClick={() =>
                                   updateQuantity(
                                     item.productId,
@@ -154,6 +195,7 @@ export default function CartDrawer() {
                                 {item.quantity}
                               </span>
                               <button
+                                type="button"
                                 onClick={() =>
                                   updateQuantity(
                                     item.productId,
@@ -178,42 +220,124 @@ export default function CartDrawer() {
               )}
             </div>
 
-            {/* Footer */}
+            {/* Footer / Checkout */}
             {items.length > 0 && (
-              <div className="border-t border-border px-6 py-5 bg-white">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-sm font-medium text-charcoal">Subtotal</span>
-                  <span className="font-serif text-xl font-semibold text-coffee">
-                    {formatCOP(total)}
-                  </span>
-                </div>
-                <p className="text-[10px] text-gray-soft mb-3 text-center">
-                  El envío se calcula según tu ubicación
-                </p>
-                <label
-                  htmlFor="direccion-entrega"
-                  className="text-[10px] tracking-widest uppercase text-gray-soft font-medium block mb-1.5"
-                >
-                  Dirección de entrega (opcional)
-                </label>
-                <input
-                  id="direccion-entrega"
-                  type="text"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  placeholder="Calle 123 #45-67, Barrio, Ciudad"
-                  className="w-full px-4 py-2.5 bg-cream border border-border rounded-md text-sm text-charcoal placeholder:text-gray-light focus:outline-none focus:border-coral focus:ring-1 focus:ring-coral/20 transition-all mb-4"
-                />
-                <a
-                  href={waLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => saveOrder(items, total, address.trim() || undefined)}
-                  className="w-full bg-sage text-white py-3.5 rounded-md text-xs tracking-[0.2em] uppercase font-medium hover:bg-sage/90 transition-colors duration-300 flex items-center justify-center gap-2 text-center"
-                >
-                  <MessageCircle size={16} />
-                  Finalizar Pedido vía WhatsApp
-                </a>
+              <div className="border-t border-border px-6 py-5 bg-white max-h-[55%] overflow-y-auto">
+                <form onSubmit={handleCheckout} noValidate={false}>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-sm font-medium text-charcoal">Subtotal</span>
+                    <span className="font-serif text-xl font-semibold text-coffee">
+                      {formatCOP(total)}
+                    </span>
+                  </div>
+                  <p className="text-[10px] text-gray-soft mb-3 text-center">
+                    El envío se calcula según tu ubicación
+                  </p>
+
+                  <div className="space-y-3 mb-4">
+                    <div>
+                      <label htmlFor="dir-departamento" className={checkoutLabel}>
+                        Departamento *
+                      </label>
+                      <select
+                        id="dir-departamento"
+                        value={department}
+                        onChange={(e) => {
+                          setDepartment(e.target.value);
+                          setCity("");
+                        }}
+                        required
+                        className={checkoutInput}
+                      >
+                        <option value="" disabled>
+                          Selecciona…
+                        </option>
+                        {DEPARTAMENTOS.map((dept) => (
+                          <option key={dept.nombre} value={dept.nombre}>
+                            {dept.nombre}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label htmlFor="dir-ciudad" className={checkoutLabel}>
+                        Ciudad *
+                      </label>
+                      <select
+                        id="dir-ciudad"
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                        required
+                        disabled={!department}
+                        className={`${checkoutInput} disabled:bg-nude/20 disabled:text-gray-soft`}
+                      >
+                        <option value="" disabled>
+                          {department ? "Selecciona…" : "Elige un departamento primero"}
+                        </option>
+                        {cities.map((c) => (
+                          <option key={c} value={c}>
+                            {c}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label htmlFor="dir-direccion" className={checkoutLabel}>
+                        Dirección de entrega *
+                      </label>
+                      <input
+                        id="dir-direccion"
+                        type="text"
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
+                        placeholder="Calle 123 #45-67, Barrio"
+                        required
+                        minLength={8}
+                        className={checkoutInput}
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="dir-notas" className={checkoutLabel}>
+                        Detalles adicionales (opcional)
+                      </label>
+                      <textarea
+                        id="dir-notas"
+                        rows={2}
+                        value={notes}
+                        onChange={(e) => setNotes(e.target.value)}
+                        placeholder="Referencias para la entrega, embalaje para regalo…"
+                        className={`${checkoutInput} resize-none`}
+                      />
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={saving}
+                    className="w-full bg-sage text-white py-3.5 rounded-md text-xs tracking-[0.2em] uppercase font-medium hover:bg-sage/90 transition-colors duration-300 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-wait"
+                  >
+                    <MessageCircle size={16} />
+                    {saving ? "Preparando pedido…" : "Finalizar Pedido vía WhatsApp"}
+                  </button>
+
+                  {fallbackLink && (
+                    <p className="mt-3 text-center text-xs text-gray-soft">
+                      Si WhatsApp no se abrió,{" "}
+                      <a
+                        href={fallbackLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline text-coffee font-medium"
+                      >
+                        toca este enlace
+                      </a>
+                      .
+                    </p>
+                  )}
+                </form>
               </div>
             )}
           </motion.div>
@@ -222,3 +346,9 @@ export default function CartDrawer() {
     </AnimatePresence>
   );
 }
+
+const checkoutInput =
+  "w-full px-3 py-2.5 bg-cream border border-border rounded-md text-sm text-charcoal placeholder:text-gray-light focus:outline-none focus:border-coral focus:ring-1 focus:ring-coral/20 transition-all";
+
+const checkoutLabel =
+  "block text-[10px] tracking-widest uppercase text-gray-soft font-medium mb-1.5";
