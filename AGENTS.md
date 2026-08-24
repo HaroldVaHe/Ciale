@@ -126,18 +126,18 @@ No test framework is configured. No typecheck script exists (use `npx tsc --noEm
 - [x] Tags como chips con sugerencias en `ProductForm` (datalist propio: Enter/coma agrega, Backspace borra, clic en sugeridos; servidor sigue validando)
 - [x] Verificar flujo end-to-end (crear categoría → moverla en el orden → renombrarla → intentar borrar con productos → crear producto con tags sugeridos; verificado por el usuario)
 
-### Fase 6: Orders & Checkout 🟡
+### Fase 6: Orders & Checkout ✅
 - [x] Sistema de reseñas (adelantado): `supabase/reviews.sql` + CRUD `/admin/reviews` + visibles en QuickView + JSON-LD `review`/`aggregateRating` solo con datos reales
 - [x] Guardado de pedidos → `lib/orders.ts` (fire-and-forget al hacer clic en "Finalizar Pedido vía WhatsApp": orders + order_items con snapshot de precio; nunca bloquea ni rompe el checkout)
 - [x] Vista `/admin/orders` → tarjetas por pedido con artículos, total, contadores por estado y acciones
 - [x] Estados de pedido → nuevo / confirmado / enviado / entregado / cancelado (`OrderStatusControls` con transiciones rápidas + cancelar + eliminar; Server Actions re-verifican admin)
 - [x] Referencia del pedido en WhatsApp → `orderRef()` (`CL-XXXXXXXX`, 8 chars del UUID) va en el mensaje; el checkout crea el pedido ANTES de abrir WhatsApp (botón async con fallback si el popup se bloquea)
 - [x] Formulario de checkout obligatorio → dirección, departamento y ciudad (selects dependientes desde `data/colombia.ts`); detalles adicionales opcional → `orders.notes`
-- [ ] Verificar flujo end-to-end (compra de prueba → pedido en BD → avanzar estado → cancelar → eliminar) — manual
+- [x] Verificar flujo end-to-end (compra de prueba → pedido en BD con CL-ref; verificado por el usuario)
 
 ### Fase 7: Polish & Production
 - ~~SEO (meta tags, structured data, sitemap)~~ ✅ hecho adelantado (JSON-LD JewelryStore/WebSite/ItemList/FAQPage, OG/Twitter cards, sitemap.xml, robots.txt, FAQ visible para AEO)
-- Analytics
-- Auditoría de performance
-- Error handling
+- [x] Analytics → GA4 activable con `NEXT_PUBLIC_GA_MEASUREMENT_ID` (Script afterInteractive en layout; sin la var no se carga nada)
+- [x] Error handling → `app/error.tsx` (retry) + `app/not-found.tsx` (404 con marca), ambos en español
+- Auditoría de performance (Lighthouse contra el sitio desplegado)
 - Testing final
