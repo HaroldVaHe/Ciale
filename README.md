@@ -228,10 +228,10 @@ Technical SEO and answer-engine optimization are built in:
 
 Recommended method — **DNS domain verification**:
 
-1. Open [Google Search Console](https://search.google.com/search-console) and add `ciale.online` as a **Domain** property.
-2. Google shows a `TXT` record like `google-site-verification=XXXX`. Add it at your DNS provider (wherever `ciale.online` is managed) as a `TXT` record on the root (`@`) host.
+1. Open [Google Search Console](https://search.google.com/search-console) and add `ciale.shop` as a **Domain** property.
+2. Google shows a `TXT` record like `google-site-verification=XXXX`. Add it at your DNS provider (wherever `ciale.shop` is managed) as a `TXT` record on the root (`@`) host.
 3. Wait for DNS propagation, then click **Verify**.
-4. Submit `https://ciale.online/sitemap.xml` under *Sitemaps*.
+4. Submit `https://ciale.shop/sitemap.xml` under *Sitemaps*.
 
 DNS verification covers the whole domain (including subdomains) and doesn't depend on deploys, hosting, or environment variables.
 
@@ -476,10 +476,10 @@ El sitio incluye SEO técnico y optimización para motores de respuesta (answer 
 
 Método recomendado — **verificación por DNS (dominio)**:
 
-1. Abre [Google Search Console](https://search.google.com/search-console) y agrega `ciale.online` como propiedad de **Dominio**.
-2. Google muestra un registro `TXT` como `google-site-verification=XXXX`. Agrégalo en tu proveedor de DNS (donde esté gestionado `ciale.online`) como registro `TXT` en el host raíz (`@`).
+1. Abre [Google Search Console](https://search.google.com/search-console) y agrega `ciale.shop` como propiedad de **Dominio**.
+2. Google muestra un registro `TXT` como `google-site-verification=XXXX`. Agrégalo en tu proveedor de DNS (donde esté gestionado `ciale.shop`) como registro `TXT` en el host raíz (`@`).
 3. Espera la propagación de DNS y haz clic en **Verificar**.
-4. Envía `https://ciale.online/sitemap.xml` en *Sitemaps*.
+4. Envía `https://ciale.shop/sitemap.xml` en *Sitemaps*.
 
 La verificación por DNS cubre todo el dominio (incluyendo subdominios) y no depende de deploys, hosting ni variables de entorno.
 

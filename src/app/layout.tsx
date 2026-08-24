@@ -7,7 +7,7 @@ import { faqs } from "@/data/faqs";
 import { getPublicReviewsForSeo } from "@/lib/supabase/public-reviews";
 import "./globals.css";
 
-const SITE_URL = "https://ciale.online";
+const SITE_URL = "https://ciale.shop";
 const SITE_NAME = "CIALÉ | Joyería Artesanal";
 const SITE_TAGLINE = "Detalles que cuentan historias. Joyería artesanal creada con amor.";
 const SITE_DESCRIPTION =
