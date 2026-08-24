@@ -42,12 +42,12 @@ export default async function AdminPanelLayout({
               >
                 Reseñas
               </Link>
-              <span
-                className="text-charcoal/30 cursor-not-allowed"
-                title="Disponible en la Fase 6"
+              <Link
+                href="/admin/orders"
+                className="text-charcoal hover:text-coral transition-colors duration-300"
               >
                 Pedidos
-              </span>
+              </Link>
             </nav>
           </div>
 

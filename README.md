@@ -253,7 +253,7 @@ DNS verification covers the whole domain (including subdomains) and doesn't depe
 | **Fase 3** | Done | Admin Authentication — single-admin login behind proxy; keep public signups disabled in Supabase |
 | **Fase 4** | Done | Product CRUD — full admin catalog management with WebP image pipeline |
 | **Fase 5** | Partial | Categories & Organization — code complete; pending end-to-end verification (manual) |
-| **Fase 6** | Partial | Orders & Checkout — reviews system done (admin CRUD + real JSON-LD); order management pending |
+| **Fase 6** | Partial | Orders & Checkout — orders saved to DB at checkout + admin panel with statuses (new/confirmed/shipped/delivered/cancelled); pending end-to-end verification |
 | **Fase 7** | Partial | Polish & Production — analytics, performance, error handling, testing *(SEO & AEO already done)* |
 
 ---
@@ -501,7 +501,7 @@ La verificación por DNS cubre todo el dominio (incluyendo subdominios) y no dep
 | **Fase 3** | Hecho | Autenticación Admin — login de admin único tras proxy; mantener signups públicos deshabilitados en Supabase |
 | **Fase 4** | Hecho | CRUD de Productos — gestión completa desde /admin con pipeline de imágenes WebP |
 | **Fase 5** | Hecho | Categorías y Organización — CRUD en admin con ordenamiento y sugerencias de tags |
-| **Fase 6** | Parcial | Pedidos y Checkout — sistema de reseñas hecho (CRUD admin + JSON-LD real); falta gestión de pedidos |
+| **Fase 6** | Parcial | Pedidos y Checkout — pedidos a BD desde el checkout + panel con estados (nuevo/confirmado/enviado/entregado/cancelado); falta verificación end-to-end |
 | **Fase 7** | Parcial | Pulido y Producción — analytics, performance, error handling, testing *(SEO y AEO ya implementados)* |
 
 ---

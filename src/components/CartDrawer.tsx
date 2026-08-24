@@ -7,6 +7,7 @@ import { X, Minus, Plus, Trash2, MessageCircle, ShoppingBag } from "lucide-react
 import { useCart } from "@/context/CartContext";
 import { WHATSAPP_NUMBER, formatCOP, generateWhatsAppLink } from "@/lib/utils";
 import { useDialog } from "@/hooks/useDialog";
+import { saveOrder } from "@/lib/orders";
 
 export default function CartDrawer() {
   const { items, isOpen, closeCart, updateQuantity, removeItem, total } = useCart();
@@ -207,6 +208,7 @@ export default function CartDrawer() {
                   href={waLink}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => saveOrder(items, total, address.trim() || undefined)}
                   className="w-full bg-sage text-white py-3.5 rounded-md text-xs tracking-[0.2em] uppercase font-medium hover:bg-sage/90 transition-colors duration-300 flex items-center justify-center gap-2 text-center"
                 >
                   <MessageCircle size={16} />

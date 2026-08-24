@@ -35,7 +35,7 @@ create index if not exists products_active_idx   on public.products (is_active);
 create table if not exists public.orders (
   id               uuid primary key default gen_random_uuid(),
   status           text not null default 'nuevo'
-                   check (status in ('nuevo','confirmado','empacado','enviado','entregado','cancelado')),
+                   check (status in ('nuevo','confirmado','enviado','entregado','cancelado')),
   customer_name    text,
   customer_phone   text,
   delivery_address text,

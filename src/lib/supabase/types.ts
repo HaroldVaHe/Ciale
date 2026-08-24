@@ -66,7 +66,7 @@ export interface Product {
 export interface Order {
   Row: {
     id: string;
-    status: "nuevo" | "confirmado" | "empacado" | "enviado" | "entregado" | "cancelado";
+    status: "nuevo" | "confirmado" | "enviado" | "entregado" | "cancelado";
     customer_name: string | null;
     customer_phone: string | null;
     delivery_address: string | null;
