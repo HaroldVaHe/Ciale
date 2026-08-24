@@ -139,5 +139,5 @@ No test framework is configured. No typecheck script exists (use `npx tsc --noEm
 - ~~SEO (meta tags, structured data, sitemap)~~ ✅ hecho adelantado (JSON-LD JewelryStore/WebSite/ItemList/FAQPage, OG/Twitter cards, sitemap.xml, robots.txt, FAQ visible para AEO)
 - [x] Analytics → GA4 activable con `NEXT_PUBLIC_GA_MEASUREMENT_ID` (Script afterInteractive en layout; sin la var no se carga nada)
 - [x] Error handling → `app/error.tsx` (retry) + `app/not-found.tsx` (404 con marca), ambos en español
-- [x] Auditoría de performance → Lighthouse sobre ciale.shop: móvil 86 / desktop 98, a11y 95, best-practices 100, SEO 100, CLS 0. Única mejora pendiente es de infra: Vercel tiene `www.ciale.shop` como dominio primario y cada visita paga un redirect 308 (~860 ms); cambiar el primario a `ciale.shop` (Domains → Set as primary) lo elimina.
-- [ ] Testing final (pase manual del usuario tras el cambio de dominio primario)
+- [x] Auditoría de performance → Lighthouse sobre ciale.shop: móvil 94 / desktop 98, a11y 95, best-practices 100, SEO 100, CLS 0. Dominio primario corregido a `ciale.shop` (www redirige 308; antes cada visita pagaba ~860 ms de redirect). Cero oportunidades restantes >50 ms.
+- [ ] Testing final (pase manual del usuario)
