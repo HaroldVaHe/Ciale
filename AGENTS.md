@@ -35,7 +35,8 @@ supabase/
 ├── schema.sql    # Tablas + RLS (ejecutar una vez)
 ├── seed.sql      # 3 categorías + los 12 productos (re-ejecutable)
 ├── storage.sql   # Bucket product-images + políticas (Fase 4, ejecutar una vez)
-└── reviews.sql   # Tabla product_reviews + RLS (ejecutar una vez)
+├── reviews.sql   # Tabla product_reviews + RLS (ejecutar una vez)
+└── orders-policy-fix.sql  # Parche RLS pedidos anónimos (la BD viva no tenía la política INSERT)
 ```
 
 ## Commands

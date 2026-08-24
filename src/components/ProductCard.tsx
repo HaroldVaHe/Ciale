@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { MessageCircle, Eye, Plus } from "lucide-react";
+import { Eye, Plus } from "lucide-react";
 import { useCart } from "@/context/CartContext";
-import { WHATSAPP_NUMBER, formatCOP } from "@/lib/utils";
+import { formatCOP } from "@/lib/utils";
 import type { Product } from "@/data/products";
 
 interface ProductCardProps {
@@ -14,7 +14,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, onQuickView }: ProductCardProps) {
-  const { addItem } = useCart();
+  const { addItem, openCart } = useCart();
   const [showAdded, setShowAdded] = useState(false);
 
   const handleAddToCart = () => {
@@ -27,13 +27,10 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
       variantHex: product.variants[0]?.hex || "",
       image: product.image,
     });
+    openCart();
     setShowAdded(true);
     setTimeout(() => setShowAdded(false), 1500);
   };
-
-  const waLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-    `Hola CIALÉ! Me interesa el collar "${product.name}". ¿Está disponible?`
-  )}`;
 
   return (
     <motion.div
@@ -83,48 +80,36 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
           {formatCOP(product.price)}
         </p>
 
-        {/* Action buttons */}
-        <div className="flex gap-2">
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            onClick={handleAddToCart}
-            className="flex-1 bg-coffee text-white py-2.5 rounded-md text-xs tracking-wider uppercase font-medium hover:bg-charcoal transition-colors duration-300 flex items-center justify-center gap-2"
-          >
-            <AnimatePresence mode="wait">
-              {showAdded ? (
-                <motion.span
-                  key="added"
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -5 }}
-                >
-                  ✓ Agregado
-                </motion.span>
-              ) : (
-                <motion.span
-                  key="add"
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -5 }}
-                  className="flex items-center gap-2"
-                >
-                  <Plus size={14} />
-                  Agregar
-                </motion.span>
-              )}
-            </AnimatePresence>
-          </motion.button>
-
-          <a
-            href={waLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-sage/80 text-white py-2.5 px-3 rounded-md hover:bg-sage transition-colors duration-300 flex items-center justify-center"
-            title="Comprar por WhatsApp"
-          >
-            <MessageCircle size={16} />
-          </a>
-        </div>
+        {/* Action button */}
+        <motion.button
+          whileTap={{ scale: 0.97 }}
+          onClick={handleAddToCart}
+          className="w-full bg-coffee text-white py-2.5 rounded-md text-xs tracking-wider uppercase font-medium hover:bg-charcoal transition-colors duration-300 flex items-center justify-center gap-2"
+        >
+          <AnimatePresence mode="wait">
+            {showAdded ? (
+              <motion.span
+                key="added"
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -5 }}
+              >
+                ✓ Agregado
+              </motion.span>
+            ) : (
+              <motion.span
+                key="add"
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -5 }}
+                className="flex items-center gap-2"
+              >
+                <Plus size={14} />
+                Agregar al carrito
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </motion.button>
       </div>
     </motion.div>
   );
