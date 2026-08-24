@@ -34,7 +34,8 @@ src/
 supabase/
 ├── schema.sql    # Tablas + RLS (ejecutar una vez)
 ├── seed.sql      # 3 categorías + los 12 productos (re-ejecutable)
-└── storage.sql   # Bucket product-images + políticas (Fase 4, ejecutar una vez)
+├── storage.sql   # Bucket product-images + políticas (Fase 4, ejecutar una vez)
+└── reviews.sql   # Tabla product_reviews + RLS (ejecutar una vez)
 ```
 
 ## Commands
@@ -72,6 +73,7 @@ No test framework is configured. No typecheck script exists (use `npx tsc --noEm
 - **Locale**: All UI text is in Spanish (Colombian). `lang="es"`, OpenGraph `locale: "es_CO"`.
 - **Product images**: WebP optimized (~11-16 KB each) in `public/products/`. Banner in `public/Banner.webp` (~100 KB). All images use `next/image`.
 - **OG share image**: `public/og-image.jpg` (1200×630 JPEG, WhatsApp-safe). Regenerate with `node scripts/generate-og-image.mjs`. Don't use WebP for `og:image` — WhatsApp's crawler often fails to render it.
+- **No fake reviews in Product JSON-LD**: Search Console reports missing `review`/`aggregateRating` as non-critical warnings. CIALÉ now has a REAL review system (`product_reviews`, admin CRUD at `/admin/reviews`) so ratings markup is earned, not fabricated: the ItemList JSON-LD adds `review` + `aggregateRating` ONLY for products with published reviews in the DB (read server-side at prerender via `lib/supabase/public-reviews.ts` with a cookieless anon client — keeps `/` static). Without DB/env vars or reviews, no rating markup is emitted. Storefront visibility: QuickViewModal shows the product's published reviews (fed by `getCatalogo().reviewsByProduct`). Workflow: Erika receives testimonials via WhatsApp → registers them in `/admin/reviews` → publishes.
 - **Recompression**: Run `node scripts/optimize-images.mjs` after adding new PNG images to `public/`.
 
 ## Roadmap — Fases de Desarrollo
@@ -115,14 +117,15 @@ No test framework is configured. No typecheck script exists (use `npx tsc --noEm
 - [x] Ejecutar `supabase/storage.sql` en el SQL Editor (bucket `product-images` verificado vía API pública)
 - [x] Verificar flujo end-to-end (crear producto de prueba → visible en tienda → ocultar → eliminar; verificado por el usuario)
 
-### Fase 5: Categories & Organization 🟡
+### Fase 5: Categories & Organization ✅
 - [x] Server Actions de categorías → `app/admin/categories/actions.ts` (crear con id autogenerado del nombre, renombrar inline, eliminar con protección por productos asociados, reordenar)
 - [x] Página `/admin/categories` → lista con contador de productos, flechas de orden, banner de errores vía `?error=`
 - [x] Reordenamiento por flechas compartido → `components/admin/ReorderButtons.tsx` (categorías y productos; intercambia `sort_order` con el vecino)
 - [x] Tags como chips con sugerencias en `ProductForm` (datalist propio: Enter/coma agrega, Backspace borra, clic en sugeridos; servidor sigue validando)
-- [ ] Verificar flujo end-to-end (crear categoría → moverla en el orden → renombrarla → intentar borrar con productos → crear producto con tags sugeridos) — manual
+- [x] Verificar flujo end-to-end (crear categoría → moverla en el orden → renombrarla → intentar borrar con productos → crear producto con tags sugeridos; verificado por el usuario)
 
 ### Fase 6: Orders & Checkout
+- [x] Sistema de reseñas (adelantado): `supabase/reviews.sql` + CRUD `/admin/reviews` + visibles en QuickView + JSON-LD `review`/`aggregateRating` solo con datos reales
 - Almacenamiento de pedidos en Supabase
 - Vista de gestión de pedidos para admin
 - Estados de pedido

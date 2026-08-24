@@ -115,6 +115,11 @@ export default function ProductGrid() {
       <QuickViewModal
         product={quickViewProduct}
         onClose={() => setQuickViewProduct(null)}
+        reviews={
+          quickViewProduct
+            ? (catalogo.reviewsByProduct[quickViewProduct.id] ?? [])
+            : []
+        }
       />
     </>
   );

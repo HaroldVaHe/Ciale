@@ -18,15 +18,28 @@ export interface CatalogoCategory {
   label: string;
 }
 
+export interface StorefrontReview {
+  id: string;
+  productId: string;
+  authorName: string;
+  rating: number;
+  comment: string | null;
+  createdAt: string;
+}
+
+export type ReviewsByProduct = Record<string, StorefrontReview[]>;
+
 export interface Catalogo {
   products: Product[];
   categories: CatalogoCategory[];
+  reviewsByProduct: ReviewsByProduct;
 }
 
 export function getLocalCatalogo(): Catalogo {
   return {
     products: fallbackProducts,
     categories: fallbackCategories.map((c) => ({ id: c.id, label: c.label })),
+    reviewsByProduct: {},
   };
 }
 
@@ -71,6 +84,8 @@ export async function getCatalogo(): Promise<Catalogo> {
 
     const dbProducts = (productsResult.data ?? []).map(mapDbProduct);
 
+    const reviewsByProduct = await getPublishedReviews(supabase);
+
     return {
       products: dbProducts.length > 0 ? dbProducts : fallbackProducts,
       categories: [
@@ -80,8 +95,44 @@ export async function getCatalogo(): Promise<Catalogo> {
           label: row.label,
         })),
       ],
+      reviewsByProduct,
     };
   } catch {
     return getLocalCatalogo();
+  }
+}
+
+/**
+ * Reseñas publicadas agrupadas por producto. Un fallo aquí (p. ej. la tabla
+ * aún no existe porque no se ejecutó reviews.sql) NO tumba el catálogo:
+ * simplemente devuelve un mapa vacío.
+ */
+async function getPublishedReviews(
+  supabase: ReturnType<typeof createSupabaseBrowserClient>
+): Promise<ReviewsByProduct> {
+  try {
+    const { data, error } = await supabase
+      .from("product_reviews")
+      .select("id, product_id, author_name, rating, comment, created_at")
+      .eq("is_published", true)
+      .order("created_at", { ascending: false });
+
+    if (error) return {};
+
+    const map: ReviewsByProduct = {};
+    for (const row of data ?? []) {
+      const review: StorefrontReview = {
+        id: row.id,
+        productId: row.product_id,
+        authorName: row.author_name,
+        rating: row.rating,
+        comment: row.comment,
+        createdAt: row.created_at,
+      };
+      (map[row.product_id] ??= []).push(review);
+    }
+    return map;
+  } catch {
+    return {};
   }
 }

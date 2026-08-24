@@ -113,6 +113,28 @@ export interface OrderItem {
   Update: Partial<OrderItem["Insert"]>;
 }
 
+export interface ProductReview {
+  Row: {
+    id: string;
+    product_id: string;
+    author_name: string;
+    rating: number;
+    comment: string | null;
+    is_published: boolean;
+    created_at: string;
+  };
+  Insert: {
+    id?: string;
+    product_id: string;
+    author_name: string;
+    rating: number;
+    comment?: string | null;
+    is_published?: boolean;
+    created_at?: string;
+  };
+  Update: Partial<ProductReview["Insert"]>;
+}
+
 export interface Database {
   public: {
     Tables: {
@@ -150,6 +172,19 @@ export interface Database {
             foreignKeyName: "order_items_order_id_fkey";
             columns: ["order_id"];
             referencedRelation: "orders";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      product_reviews: {
+        Row: ProductReview["Row"];
+        Insert: ProductReview["Insert"];
+        Update: ProductReview["Update"];
+        Relationships: [
+          {
+            foreignKeyName: "product_reviews_product_id_fkey";
+            columns: ["product_id"];
+            referencedRelation: "products";
             referencedColumns: ["id"];
           }
         ];

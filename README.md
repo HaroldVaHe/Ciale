@@ -253,7 +253,7 @@ DNS verification covers the whole domain (including subdomains) and doesn't depe
 | **Fase 3** | Done | Admin Authentication — single-admin login behind proxy; keep public signups disabled in Supabase |
 | **Fase 4** | Done | Product CRUD — full admin catalog management with WebP image pipeline |
 | **Fase 5** | Partial | Categories & Organization — code complete; pending end-to-end verification (manual) |
-| **Fase 6** | Pending | Orders & Checkout — order storage, admin view, status tracking |
+| **Fase 6** | Partial | Orders & Checkout — reviews system done (admin CRUD + real JSON-LD); order management pending |
 | **Fase 7** | Partial | Polish & Production — analytics, performance, error handling, testing *(SEO & AEO already done)* |
 
 ---
@@ -500,8 +500,8 @@ La verificación por DNS cubre todo el dominio (incluyendo subdominios) y no dep
 | **Fase 2** | Done | Supabase Foundation — catálogo lee de Supabase con fallback local (activado en local; Vercel pendiente de env vars) |
 | **Fase 3** | Hecho | Autenticación Admin — login de admin único tras proxy; mantener signups públicos deshabilitados en Supabase |
 | **Fase 4** | Hecho | CRUD de Productos — gestión completa desde /admin con pipeline de imágenes WebP |
-| **Fase 5** | Parcial | Categorías y Organización — listo en código; falta verificación end-to-end (manual) |
-| **Fase 6** | Pendiente | Pedidos y Checkout — almacenamiento de pedidos, vista admin, estados |
+| **Fase 5** | Hecho | Categorías y Organización — CRUD en admin con ordenamiento y sugerencias de tags |
+| **Fase 6** | Parcial | Pedidos y Checkout — sistema de reseñas hecho (CRUD admin + JSON-LD real); falta gestión de pedidos |
 | **Fase 7** | Parcial | Pulido y Producción — analytics, performance, error handling, testing *(SEO y AEO ya implementados)* |
 
 ---

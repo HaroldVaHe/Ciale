@@ -36,6 +36,12 @@ export default async function AdminPanelLayout({
               >
                 Categorías
               </Link>
+              <Link
+                href="/admin/reviews"
+                className="text-charcoal hover:text-coral transition-colors duration-300"
+              >
+                Reseñas
+              </Link>
               <span
                 className="text-charcoal/30 cursor-not-allowed"
                 title="Disponible en la Fase 6"

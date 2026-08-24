@@ -7,14 +7,20 @@ import { X, ShoppingBag, MessageCircle, Plus, Minus } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { WHATSAPP_NUMBER, formatCOP } from "@/lib/utils";
 import { useDialog } from "@/hooks/useDialog";
+import type { StorefrontReview } from "@/lib/catalogo";
 import type { Product } from "@/data/products";
 
 interface QuickViewModalProps {
   product: Product | null;
   onClose: () => void;
+  reviews?: StorefrontReview[];
 }
 
-export default function QuickViewModal({ product, onClose }: QuickViewModalProps) {
+export default function QuickViewModal({
+  product,
+  onClose,
+  reviews = [],
+}: QuickViewModalProps) {
   const { addItem } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [showAdded, setShowAdded] = useState(false);
@@ -118,6 +124,50 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
             <p className="text-sm text-gray-soft mb-6 leading-relaxed">
               {product.description}
             </p>
+
+            {/* Reviews */}
+            {reviews.length > 0 && (
+              <div className="mb-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-[10px] tracking-widest uppercase text-gray-soft font-medium">
+                    Opiniones ({reviews.length})
+                  </span>
+                  <span className="text-xs text-gold" aria-hidden="true">
+                    {"★".repeat(
+                      Math.round(
+                        reviews.reduce((sum, r) => sum + r.rating, 0) /
+                          reviews.length
+                      )
+                    )}
+                    {"☆".repeat(
+                      5 -
+                        Math.round(
+                          reviews.reduce((sum, r) => sum + r.rating, 0) /
+                            reviews.length
+                        )
+                    )}
+                  </span>
+                </div>
+                <ul className="space-y-3 max-h-40 overflow-y-auto pr-1">
+                  {reviews.map((review) => (
+                    <li key={review.id} className="border-l-2 border-nude pl-3">
+                      <p className="text-xs text-gold leading-none mb-1" aria-label={`${review.rating} de 5 estrellas`}>
+                        {"★".repeat(review.rating)}
+                        {"☆".repeat(5 - review.rating)}
+                      </p>
+                      {review.comment && (
+                        <p className="text-sm text-charcoal/80 italic leading-snug">
+                          “{review.comment}”
+                        </p>
+                      )}
+                      <p className="text-xs text-gray-soft mt-1">
+                        — {review.authorName}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             {/* Quantity */}
             <div className="mb-6">

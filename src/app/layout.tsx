@@ -3,6 +3,7 @@ import { Playfair_Display, Inter } from "next/font/google";
 import { CartProvider } from "@/context/CartContext";
 import { products } from "@/data/products";
 import { faqs } from "@/data/faqs";
+import { getPublicReviewsForSeo } from "@/lib/supabase/public-reviews";
 import "./globals.css";
 
 const SITE_URL = "https://ciale.online";
@@ -64,72 +65,114 @@ export const metadata: Metadata = {
     : {}),
 };
 
-const structuredData = [
-  {
-    "@context": "https://schema.org",
-    "@type": "JewelryStore",
-    "@id": `${SITE_URL}/#store`,
-    name: "CIALÉ",
-    alternateName: "CIALÉ Jewelry",
-    slogan: "Detalles que cuentan historias.",
-    description: SITE_DESCRIPTION,
-    url: SITE_URL,
-    logo: `${SITE_URL}/CialeMarron.webp`,
-    image: `${SITE_URL}/Banner.webp`,
-    telephone: "+573203039847",
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Chía",
-      addressRegion: "Cundinamarca",
-      addressCountry: "CO",
-    },
-    sameAs: ["https://instagram.com/ciale.jewelry"],
-    priceRange: "$$",
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "@id": `${SITE_URL}/#website`,
-    name: SITE_NAME,
-    url: SITE_URL,
-    inLanguage: "es-CO",
-    publisher: { "@id": `${SITE_URL}/#store` },
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: "Catálogo CIALÉ",
-    itemListElement: products.map((product, index) => ({
-      "@type": "ListItem",
-      position: index + 1,
-      item: {
-        "@type": "Product",
-        name: product.name,
-        description: product.description,
-        image: `${SITE_URL}${product.image}`,
-        category: product.category,
-        offers: {
-          "@type": "Offer",
-          price: product.price,
-          priceCurrency: "COP",
-          availability: "https://schema.org/InStock",
-          url: `${SITE_URL}/#catalogo`,
-        },
-      },
-    })),
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: faqs.map((faq) => ({
-      "@type": "Question",
-      name: faq.question,
-      acceptedAnswer: { "@type": "Answer", text: faq.answer },
-    })),
-  },
-];
+async function buildStructuredData() {
+  const reviewsByProduct = await getPublicReviewsForSeo();
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+  return [
+    {
+      "@context": "https://schema.org",
+      "@type": "JewelryStore",
+      "@id": `${SITE_URL}/#store`,
+      name: "CIALÉ",
+      alternateName: "CIALÉ Jewelry",
+      slogan: "Detalles que cuentan historias.",
+      description: SITE_DESCRIPTION,
+      url: SITE_URL,
+      logo: `${SITE_URL}/CialeMarron.webp`,
+      image: `${SITE_URL}/Banner.webp`,
+      telephone: "+573203039847",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Chía",
+        addressRegion: "Cundinamarca",
+        addressCountry: "CO",
+      },
+      sameAs: ["https://instagram.com/ciale.jewelry"],
+      priceRange: "$$",
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      name: SITE_NAME,
+      url: SITE_URL,
+      inLanguage: "es-CO",
+      publisher: { "@id": `${SITE_URL}/#store` },
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      name: "Catálogo CIALÉ",
+      itemListElement: products.map((product, index) => {
+        const productReviews = reviewsByProduct[product.id] ?? [];
+        const count = productReviews.length;
+        const average =
+          count > 0
+            ? productReviews.reduce((sum, r) => sum + r.rating, 0) / count
+            : 0;
+
+        return {
+          "@type": "ListItem",
+          position: index + 1,
+          item: {
+            "@type": "Product",
+            name: product.name,
+            description: product.description,
+            image: `${SITE_URL}${product.image}`,
+            category: product.category,
+            sku: product.id,
+            brand: { "@type": "Brand", name: "CIALÉ" },
+            itemCondition: "https://schema.org/NewCondition",
+            offers: {
+              "@type": "Offer",
+              price: product.price,
+              priceCurrency: "COP",
+              availability: "https://schema.org/InStock",
+              url: `${SITE_URL}/#catalogo`,
+            },
+            // Solo con reseñas reales registradas por el admin — nunca inventadas.
+            ...(count > 0 && {
+              review: productReviews.slice(0, 5).map((review) => ({
+                "@type": "Review",
+                author: { "@type": "Person", name: review.authorName },
+                datePublished: review.datePublished.slice(0, 10),
+                ...(review.comment
+                  ? { reviewBody: review.comment }
+                  : {}),
+                reviewRating: {
+                  "@type": "Rating",
+                  ratingValue: review.rating,
+                  bestRating: 5,
+                  worstRating: 1,
+                },
+              })),
+              aggregateRating: {
+                "@type": "AggregateRating",
+                ratingValue: Number(average.toFixed(1)),
+                reviewCount: count,
+                bestRating: 5,
+                worstRating: 1,
+              },
+            }),
+          },
+        };
+      }),
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: { "@type": "Answer", text: faq.answer },
+      })),
+    },
+  ];
+}
+
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const structuredData = await buildStructuredData();
+
   return (
     <html lang="es" style={{ colorScheme: "light" }} className={`${playfair.variable} ${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
